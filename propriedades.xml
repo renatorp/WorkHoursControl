@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuracao>
+    <issueDefault>23152345</issueDefault>
+    <loginAplicacao>fulano.ciclano</loginAplicacao>
+    <passwordAplicacao>123456</passwordAplicacao>
+    <proxyHost>proxyteste</proxyHost>
+    <proxyPassword>12345</proxyPassword>
+    <proxyPort>80</proxyPort>
+    <proxyUser>fulanoc</proxyUser>
+    <urlPlanilha>C:\Users\fulano\Documents\abc.xlsx</urlPlanilha>
+</configuracao>
