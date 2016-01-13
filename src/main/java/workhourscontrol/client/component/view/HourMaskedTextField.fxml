@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+
+
+<fx:root prefHeight="26.0" prefWidth="48.0" type="HBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <TextField fx:id="campoHora" onKeyReleased="#mask" prefHeight="25.0" prefWidth="48.0" />
+   </children>
+</fx:root>
