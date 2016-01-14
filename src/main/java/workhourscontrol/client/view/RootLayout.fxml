@@ -9,13 +9,13 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Arquivo">
             <items>
-              <MenuItem mnemonicParsing="false" text="New" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleLoad" text="Open" />
-                  <MenuItem mnemonicParsing="false" text="Save" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Save As" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+              <MenuItem mnemonicParsing="false" onAction="#handleNew" text="Novo" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleLoad" text="Abrir" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Salvar" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Salvar como" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Sair" />
             </items>
           </Menu>
         </menus>

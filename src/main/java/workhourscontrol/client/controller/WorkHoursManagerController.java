@@ -2,12 +2,14 @@ package workhourscontrol.client.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.beans.value.ObservableValue;
@@ -36,6 +38,8 @@ import workhourscontrol.entity.RegistroHora;
 
 public class WorkHoursManagerController {
 
+	private Logger logger = Logger.getLogger(WorkHoursManagerController.class);
+
 	private MainApp mainApp;
 
 	private IntegracaoService integracaoService;
@@ -49,6 +53,8 @@ public class WorkHoursManagerController {
 	@FXML private TableColumn<RegistroHoraObservable, Boolean> colunaSync;
 
 	@FXML private TabelaTotalizador tabelaTotalizador;
+
+	private LocalDate ultimaDataRegistro;
 
 	@FXML
 	public void initialize() {
@@ -124,14 +130,17 @@ public class WorkHoursManagerController {
             // Define a pessoa no controller.
             EditHourController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setRegistroHora(itemSelecionado);
             controller.setControllerPai(this);
+            controller.setRegistroHora(itemSelecionado);
             controller.setOnSave(() -> tabelaTotalizador.atualizarTotalizador());
 
-            // Mostra a janela e espera atï¿½ o usuï¿½rio fechar.
+            // Mostra a janela e espera até o usuário fechar.
+            mainApp.getPrimaryStage().hide();
             dialogStage.showAndWait();
+            mainApp.getPrimaryStage().show();
 
 		} catch (IOException e) {
+			logger.error("Ocorreu um erro ao carregar tela de edição", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -176,7 +185,7 @@ public class WorkHoursManagerController {
     	if (!items.isEmpty()) {
 
     		List<RegistroHora> itensNaoLancados = items.stream()
-    											.filter(t -> !t.isLancado())
+    											.filter(t -> !t.isLancado() && StringUtils.isNotBlank(t.getHoraFim()))
     											.collect(Collectors.toList());
 
 
@@ -231,6 +240,15 @@ public class WorkHoursManagerController {
 				tabelaTotalizador.atualizarTotalizador();  //errado
 			}
 		});
+
+	}
+
+	public LocalDate getUltimaDataRegistro() {
+		return ultimaDataRegistro;
+	}
+
+	public void setUltimaDataRegistro(LocalDate ultimaDataRegistro) {
+		this.ultimaDataRegistro = ultimaDataRegistro;
 	}
 
 }

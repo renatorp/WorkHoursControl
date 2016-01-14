@@ -27,11 +27,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
 
 public abstract class ControleHorasHttp implements ControleHoras {
+
+	private Logger logger = Logger.getLogger(ControleHorasHttp.class);
 
 	private ParametrosControleHorasHttp parametros;
 	private boolean loggedIn = false;
@@ -84,7 +87,8 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			System.out.println(EntityUtils.toString(r.getEntity()));
 
 		} catch (IOException e) {
-			throw new RuntimeException("Ocorreu um erro ao efetuar login", e);
+			logger.error("Ocorreu um erro ao efetuar login", e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -102,7 +106,8 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			return post;
 
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Ocorreu um erro ao gerar HttpPost", e);
+			logger.error("Ocorreu um erro ao gerar HttpPost", e);
+			throw new RuntimeException( e);
 		}
 
 
@@ -145,7 +150,8 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			registro.setLancado(true);
 
 		} catch (IOException | ParseException e) {
-			throw new RuntimeException("Ocorreu ao registrar hora", e);
+			logger.error("Ocorreu ao registrar hora", e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -239,7 +245,8 @@ public abstract class ControleHorasHttp implements ControleHoras {
 				httpClient.close();
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Ocorreu ao fechar httpClient", e);
+			logger.error("Ocorreu ao fechar httpClient", e);
+			throw new RuntimeException(e);
 		}
 
 	}

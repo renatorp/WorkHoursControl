@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,6 +22,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import workhourscontrol.entity.RegistroHora;
 
 public class ControleHorasPlanilha implements ControleHoras {
+
+	private Logger logger = Logger.getLogger(ControleHorasPlanilha.class);
 
 	private static final String SHEET_NAME = "PONTO";
 	private static final Integer ROW_INDEX_START = 15;
@@ -51,6 +54,7 @@ public class ControleHorasPlanilha implements ControleHoras {
 					wb = (XSSFWorkbook)WorkbookFactory.create(inp);
 				}
 			} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+				logger.error("Ocorreu um erro ao criar workbook", e);
 				throw new RuntimeException(e);
 			}
 	}
@@ -101,6 +105,7 @@ public class ControleHorasPlanilha implements ControleHoras {
 			fileOut.close();
 			wb.close();
 		} catch (IOException e) {
+			logger.error("Ocorreu um erro ao fechar conexão com planilha.", e);
 			throw new RuntimeException(e);
 		}
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +21,9 @@ import workhourscontrol.client.service.XmlService;
 import workhourscontrol.client.util.PreferencesHelper;
 
 public class MainApp extends Application{
+	private Logger logger = Logger.getLogger(MainApp.class);
 
+	public static final String NOME_PREFERENCIA_XML = "xmlPath";
 	private static final String PROPERTY_FILE = "propriedades.xml";
 
 	public static ConfiguracoesAplicacao configuracoesAplicacao;
@@ -27,7 +31,7 @@ public class MainApp extends Application{
 	private Stage primaryStage;
     private BorderPane rootLayout;
 	private ObservableList<RegistroHoraObservable> registrosHora;
-
+	private File arquivoAberto;
 
 
 	private XmlService xmlService;
@@ -55,6 +59,7 @@ public class MainApp extends Application{
 			File arquivoPropriedades = new File(PROPERTY_FILE);
 			configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
 		} catch(Exception e) {
+			logger.error("Ocorreu um erro ao carregar arquivo xml de configurações", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -113,10 +118,13 @@ public class MainApp extends Application{
 
     }
 
+    /**
+     * Carrega ultimo xml aberto, se houver
+     */
 	private void carregarXmlPreferencias() {
-		File arquivo = PreferencesHelper.getEnderecoArquivo("xmlPath");
-		  if (Objects.nonNull(arquivo)) {
-			  carregarRegistrosDoArquivo(arquivo);
+		arquivoAberto = PreferencesHelper.getEnderecoArquivo(NOME_PREFERENCIA_XML);
+		  if (Objects.nonNull(arquivoAberto)) {
+			  carregarRegistrosDoArquivo(arquivoAberto);
 		  }
 	}
 
@@ -137,6 +145,7 @@ public class MainApp extends Application{
     	try {
 			xmlService.salvarRegistroHoraXml(file, registrosHora);
 		} catch (Exception e) {
+			logger.error("Ocorreu um erro ao salvar arquivo xml", e);
 			throw new RuntimeException(e);
 		}
     }
@@ -148,8 +157,29 @@ public class MainApp extends Application{
     	try {
 			registrosHora.addAll(xmlService.carregarRegistroHoraXml(file));
 		} catch (Exception e) {
+			logger.error("Ocorreu um erro ao carregar arquivo xml", e);
 			throw new RuntimeException(e);
 		}
     }
+
+	public void limparRegistros() {
+		this.registrosHora.clear();
+	}
+
+	public File getArquivoAberto() {
+		return arquivoAberto;
+	}
+
+	public void setArquivoAberto(File arquivoAberto) {
+		this.arquivoAberto = arquivoAberto;
+		PreferencesHelper.setPersonFilePath(MainApp.NOME_PREFERENCIA_XML, arquivoAberto);
+	}
+
+	public File getDiretorioArquivoAberto() {
+		if (Objects.nonNull(arquivoAberto)) {
+			return arquivoAberto.getParentFile();
+		}
+		return null;
+	}
 
 }

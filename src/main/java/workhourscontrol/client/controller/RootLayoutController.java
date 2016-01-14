@@ -6,7 +6,6 @@ import java.util.Objects;
 import javafx.fxml.FXML;
 import workhourscontrol.client.MainApp;
 import workhourscontrol.client.util.FileHelper;
-import workhourscontrol.client.util.PreferencesHelper;
 
 public class RootLayoutController {
 
@@ -19,23 +18,40 @@ public class RootLayoutController {
 
 	@FXML
 	public void handleSaveAs() {
-		File arquivo = FileHelper.chooseFileForSaving(mainApp.getPrimaryStage(), "*.xml", "XML files (*.xml)");
+		File arquivo = FileHelper.chooseFileForSaving(mainApp.getPrimaryStage(), "*.xml", "XML files (*.xml)", mainApp.getDiretorioArquivoAberto());
 		if (Objects.nonNull(arquivo)) {
 			mainApp.salvarRegistrosNoArquivo(arquivo);
+			mainApp.setArquivoAberto(arquivo);
 		}
 	}
 
 	@FXML
 	public void handleLoad() {
-		File arquivo = FileHelper.chooseFileForOpening(mainApp.getPrimaryStage(), "*.xml", "XML files (*.xml)");
+		File arquivo = FileHelper.chooseFileForOpening(mainApp.getPrimaryStage(), "*.xml", "XML files (*.xml)", mainApp.getDiretorioArquivoAberto());
 		if (Objects.nonNull(arquivo)) {
+			this.mainApp.limparRegistros();
 			mainApp.carregarRegistrosDoArquivo(arquivo);
-			PreferencesHelper.setPersonFilePath("xmlPath", arquivo);
+			mainApp.setArquivoAberto(arquivo);
 		}
+	}
+
+	@FXML
+	public void handleNew() {
+		this.mainApp.limparRegistros();
+		this.mainApp.setArquivoAberto(null);
 	}
 
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
+	}
+
+	@FXML public void handleSave() {
+		File arquivo = mainApp.getArquivoAberto();
+		if (Objects.nonNull(arquivo)) {
+			mainApp.salvarRegistrosNoArquivo(arquivo);
+		} else {
+			handleSaveAs();
+		}
 	}
 
 }

@@ -4,14 +4,15 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import workhourscontrol.client.component.HourMaskedTextField?>
 
 <AnchorPane prefHeight="411.0" prefWidth="496.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="workhourscontrol.client.controller.EditHourController">
    <children>
       <DatePicker fx:id="campoData" layoutX="248.0" layoutY="14.0" />
       <Label layoutX="183.0" layoutY="18.0" text="Data:" />
       <Label layoutX="127.0" layoutY="48.0" text="Hora Início/Fim:" />
-      <TextField fx:id="campoHoraInicio" layoutX="248.0" layoutY="44.0" prefHeight="25.0" prefWidth="42.0" />
-      <TextField fx:id="campoHoraFim" layoutX="314.0" layoutY="44.0" prefHeight="25.0" prefWidth="42.0" />
+      <HourMaskedTextField fx:id="campoHoraInicio" layoutX="248.0" layoutY="44.0" prefHeight="25.0" prefWidth="42.0" />
+      <HourMaskedTextField fx:id="campoHoraFim" layoutX="314.0" layoutY="44.0" prefHeight="25.0" prefWidth="42.0" />
       <Label layoutX="298.0" layoutY="48.0" text="a" />
       <Label layoutX="182.0" layoutY="78.0" text="Issue:" />
       <Label layoutX="140.0" layoutY="103.0" text="Observações:" />

@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -23,6 +25,8 @@ import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 
 public class TabelaTotalizador extends HBox{
+
+	private Logger logger = Logger.getLogger(TabelaTotalizador.class);
 
 	@FXML private TableView<LocalDate> tabelaTotalizador;
 	@FXML private TableColumn<LocalDate, String> colunaDataTotal;
@@ -80,6 +84,7 @@ public class TabelaTotalizador extends HBox{
 								try {
 									return DateUtils.parseData(t.getDia(), t.getMes(), t.getAno());
 								} catch (ParseException e) {
+									logger.error("Ocorreu um erro de parse de data", e);
 									throw new RuntimeException(e);
 								}
 							}

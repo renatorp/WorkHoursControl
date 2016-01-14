@@ -13,10 +13,18 @@ import org.apache.commons.lang3.StringUtils;
 
 public class DateUtils {
 	public static final String formatoPadrao = "dd/MM/yyyy";
+	public static final String formatoPadraoDataHora = "dd/MM/yyyy hh:mm";
 
 	public static String formatarData(String dia, String mes, String ano, String formato) throws ParseException {
 		String dateString = dia + mes + ano;
 		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddmmyyyy");
+		Date data = sdfPadrao.parse(dateString);
+		return new SimpleDateFormat(formato).format(data);
+	}
+
+	public static String formatarDataHora(String dia, String mes, String ano, String hora, String minuto, String formato) throws ParseException {
+		String dateString = dia + mes + ano + hora + minuto;
+		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddmmyyyyhhmm");
 		Date data = sdfPadrao.parse(dateString);
 		return new SimpleDateFormat(formato).format(data);
 	}
@@ -32,6 +40,15 @@ public class DateUtils {
 	public static LocalDate parseData(String dia, String mes, String ano) throws ParseException {
 		String dataString = formatarData(dia, mes, ano);
 		return LocalDate.parse(dataString, DateTimeFormatter.ofPattern(DateUtils.formatoPadrao));
+	}
+
+	public static LocalDate parseDataHora(String dia, String mes, String ano, String hora, String minuto) throws ParseException {
+		String dataString = formatarDataHora(dia, mes, ano, hora, minuto);
+		return LocalDate.parse(dataString, DateTimeFormatter.ofPattern(DateUtils.formatoPadraoDataHora));
+	}
+
+	public static String formatarDataHora(String dia, String mes, String ano, String hora, String minuto) throws ParseException {
+		return formatarDataHora(dia, mes, ano, hora, minuto, formatoPadraoDataHora);
 	}
 
 	public static String getDiaAsString(LocalDate data) {
