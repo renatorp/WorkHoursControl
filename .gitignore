@@ -22,3 +22,6 @@ hs_err_pid*
 
 # arquivos de build
 build/
+
+# arquivos de log
+*.log
