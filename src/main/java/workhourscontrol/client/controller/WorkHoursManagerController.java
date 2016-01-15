@@ -194,6 +194,7 @@ public class WorkHoursManagerController {
 
 
     		integracaoService.sincronizarRegistrosHora(itensNaoLancados);
+    		this.mainApp.setNotSaved();
 
     	}
 	}

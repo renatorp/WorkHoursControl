@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import workhourscontrol.client.ConfiguracoesAplicacao;
@@ -72,6 +73,12 @@ public class IntegracaoService {
 	private ControleHorasHttp getControleHorasImpl() {
 		final String className = configuracaoAplicacao.getControleHorasClass();
 		try {
+			if (StringUtils.isBlank(className)) {
+				final String msg = "Propriedade controleHorasClass não encontrada";
+				logger.error(msg);
+				throw new RuntimeException(msg);
+			}
+
 			return (ControleHorasHttp) Class.forName(className).newInstance();
 
 		} catch (InstantiationException | IllegalAccessException e) {

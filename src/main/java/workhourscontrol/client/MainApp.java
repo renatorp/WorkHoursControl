@@ -88,6 +88,7 @@ public class MainApp extends Application{
 	private void initConfig() {
 		try {
 			File arquivoPropriedades = new File(getPropertyFileName());
+			logger.info("Utilizando arquivo " + arquivoPropriedades.getAbsolutePath());
 			configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
 		} catch(Exception e) {
 			logger.error("Ocorreu um erro ao carregar arquivo xml de configurações", e);
