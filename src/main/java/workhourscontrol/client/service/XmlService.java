@@ -12,7 +12,7 @@ import workhourscontrol.client.model.ListaRegistroHoraWrapper;
 import workhourscontrol.client.model.RegistroHoraObservable;
 
 /**
- * ServiÃ§o para lidar com arquivos xml
+ * Serviço para lidar com arquivos xml
  * @author renatorp
  *
  */

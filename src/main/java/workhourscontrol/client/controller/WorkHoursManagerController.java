@@ -132,7 +132,10 @@ public class WorkHoursManagerController {
             controller.setDialogStage(dialogStage);
             controller.setControllerPai(this);
             controller.setRegistroHora(itemSelecionado);
-            controller.setOnSave(() -> tabelaTotalizador.atualizarTotalizador());
+            controller.setOnSave(() -> {
+            	tabelaTotalizador.atualizarTotalizador();
+            	this.mainApp.setNotSaved();
+            });
 
             // Mostra a janela e espera até o usuário fechar.
             mainApp.getPrimaryStage().hide();

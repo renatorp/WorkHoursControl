@@ -89,7 +89,7 @@
 						</manifest>
 					</archive>
 					<finalName>WorkHoursControl</finalName>
-					<!-- <outputDirectory>C:\</outputDirectory> -->
+					<outputDirectory>C:\Users\brx0000540\Desktop\hacks</outputDirectory>
 					<appendAssemblyId>false</appendAssemblyId>
 					<resources>
 						<resource>

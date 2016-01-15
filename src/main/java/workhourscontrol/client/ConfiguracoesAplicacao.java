@@ -14,6 +14,7 @@ public class ConfiguracoesAplicacao {
 	private String loginAplicacao;
 	private String passwordAplicacao;
 	private String urlPlanilha;
+	private String controleHorasClass;
 
 	@XmlElement(name = "issueDefault")
 	public String getIssueDefault() {
@@ -78,6 +79,15 @@ public class ConfiguracoesAplicacao {
 	public void setUrlPlanilha(String urlPlanilha) {
 		this.urlPlanilha = urlPlanilha;
 	}
+
+	@XmlElement(name = "controleHorasClass")
+	public String getControleHorasClass() {
+		return controleHorasClass;
+	}
+	public void setControleHorasClass(String controleHorasClass) {
+		this.controleHorasClass = controleHorasClass;
+	}
+
 
 
 }

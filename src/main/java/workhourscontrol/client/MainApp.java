@@ -7,6 +7,9 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -14,10 +17,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import workhourscontrol.client.controller.RootLayoutController;
 import workhourscontrol.client.controller.WorkHoursManagerController;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.service.XmlService;
+import workhourscontrol.client.util.DialogoHelper;
+import workhourscontrol.client.util.FileHelper;
 import workhourscontrol.client.util.PreferencesHelper;
 
 public class MainApp extends Application{
@@ -33,6 +39,9 @@ public class MainApp extends Application{
 	private ObservableList<RegistroHoraObservable> registrosHora;
 	private File arquivoAberto;
 
+	// Atributos para verificas se registros já foram salvos
+	private BooleanProperty saved = new SimpleBooleanProperty();
+	private InvalidationListener savedListener;
 
 	private XmlService xmlService;
 
@@ -42,26 +51,56 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Work Hours Control");
-
-        registrosHora = FXCollections.observableArrayList();
-
-        initServices();
-        initConfig();
+    	initServices();
+    	initConfig();
+        initStage(primaryStage);
+        initCollection();
         initRootLayout();
         initWorkHoursManager();
-
     }
+
+	private void initStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("Work Hours Control");
+
+        primaryStage.setOnCloseRequest(evt -> {
+        	final boolean isSaved = saved.get();
+			if (!isSaved && !confirmarFechamentoAplicacao()) {
+        		evt.consume();
+        	}
+        });
+
+	}
+
+	/**
+	 * Usuário confirma se deve salvar o estado da aplicação no arquivo.
+	 */
+	private boolean confirmarFechamentoAplicacao() {
+		return DialogoHelper.confirmarFechamentoAplicacao(() -> salvar());
+	}
+
+	private void initCollection() {
+		registrosHora = FXCollections.observableArrayList();
+		savedListener = obs -> setNotSaved();
+		registrosHora.addListener(savedListener);
+	}
 
 	private void initConfig() {
 		try {
-			File arquivoPropriedades = new File(PROPERTY_FILE);
+			File arquivoPropriedades = new File(getPropertyFileName());
 			configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
 		} catch(Exception e) {
 			logger.error("Ocorreu um erro ao carregar arquivo xml de configurações", e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Primeiro verifica se o nome do arquivo de propriedades foi passado como parâmetro para a vm
+	 */
+	private String getPropertyFileName() {
+		final String propertyParameter = System.getProperty("arquivoPropriedades");
+		return propertyParameter != null ? propertyParameter : PROPERTY_FILE;
 	}
 
 	private void initServices() {
@@ -133,7 +172,6 @@ public class MainApp extends Application{
     }
 
 
-
     public Stage getPrimaryStage() {
 		return primaryStage;
 	}
@@ -144,6 +182,7 @@ public class MainApp extends Application{
     public void salvarRegistrosNoArquivo(File file) {
     	try {
 			xmlService.salvarRegistroHoraXml(file, registrosHora);
+			saved.set(true);
 		} catch (Exception e) {
 			logger.error("Ocorreu um erro ao salvar arquivo xml", e);
 			throw new RuntimeException(e);
@@ -156,6 +195,7 @@ public class MainApp extends Application{
     public void carregarRegistrosDoArquivo(File file) {
     	try {
 			registrosHora.addAll(xmlService.carregarRegistroHoraXml(file));
+			saved.set(true);
 		} catch (Exception e) {
 			logger.error("Ocorreu um erro ao carregar arquivo xml", e);
 			throw new RuntimeException(e);
@@ -182,4 +222,42 @@ public class MainApp extends Application{
 		return null;
 	}
 
+	public void setNotSaved() {
+		saved.set(false);
+	}
+
+	public void fecharAplicacao() {
+		primaryStage.fireEvent(new WindowEvent(primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+	}
+
+	public void salvarComo() {
+		File arquivo = FileHelper.chooseFileForSaving(primaryStage, "*.xml", "XML files (*.xml)", getDiretorioArquivoAberto());
+		if (Objects.nonNull(arquivo)) {
+			salvarRegistrosNoArquivo(arquivo);
+			setArquivoAberto(arquivo);
+		}
+	}
+
+	public void carregar() {
+		File arquivo = FileHelper.chooseFileForOpening(getPrimaryStage(), "*.xml", "XML files (*.xml)", getDiretorioArquivoAberto());
+		if (Objects.nonNull(arquivo)) {
+			limparRegistros();
+			carregarRegistrosDoArquivo(arquivo);
+			setArquivoAberto(arquivo);
+		}
+	}
+
+	public void novo() {
+		limparRegistros();
+		setArquivoAberto(null);
+	}
+
+	public void salvar() {
+		File arquivo = getArquivoAberto();
+		if (Objects.nonNull(arquivo)) {
+			salvarRegistrosNoArquivo(arquivo);
+		} else {
+			salvarComo();
+		}
+	}
 }

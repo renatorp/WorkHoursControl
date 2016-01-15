@@ -155,21 +155,21 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		}
 	}
 
-	abstract String getCookieHeader(CookieStore cookieStore);
+	public abstract String getCookieHeader(CookieStore cookieStore);
 
 	protected List<NameValuePair> getParametrosAdicionaisRegistroHora() {
 		return Collections.emptyList();
 	}
 
-	abstract String getFormatoParametroData();
+	public abstract String getFormatoParametroData();
 
-	abstract String getObservacoes();
-	abstract String getNomeParametroHoraFim();
-	abstract String getNomeParametroHoraInicio();
-	abstract String getNomeParametroData();
-	abstract String getNomeParametroIssue();
+	public abstract String getObservacoes();
+	public abstract String getNomeParametroHoraFim();
+	public abstract String getNomeParametroHoraInicio();
+	public abstract String getNomeParametroData();
+	public abstract String getNomeParametroIssue();
 
-	abstract String getUrlRegistroHora();
+	public abstract String getUrlRegistroHora();
 
 	@Override
 	public void registrarHoras(List<RegistroHora> registros) {
@@ -183,7 +183,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		}
 	}
 
-	abstract String getUrlLogin();
+	public abstract String getUrlLogin();
 
 	private List<NameValuePair> obterParametrosLogin() {
 		List<NameValuePair> loginParameters = new ArrayList<NameValuePair>();
@@ -212,9 +212,9 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		return Collections.emptyList();
 	}
 
-	abstract String getNomeParametroSenha();
+	public abstract String getNomeParametroSenha();
 
-	abstract String getNomeParametroLogin();
+	public abstract String getNomeParametroLogin();
 
 	private void logarUsuario() {
 		if (!loggedIn) {

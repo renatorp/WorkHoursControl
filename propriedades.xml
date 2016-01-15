@@ -8,4 +8,5 @@
     <proxyPort>80</proxyPort>
     <proxyUser>fulanoc</proxyUser>
     <urlPlanilha>C:\Users\fulano\Documents\abc.xlsx</urlPlanilha>
+    <controleHorasClass>workhourscontrol.service.impl.ControleHorasHttpImpl</controleHorasClass>
 </configuracao>
