@@ -2,8 +2,6 @@ package workhourscontrol.client.component;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,22 +30,22 @@ import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 
-public class TabelaTotalizador extends HBox{
+public class TabelaTotalizadorSemanal extends HBox{
 
-	private Logger logger = Logger.getLogger(TabelaTotalizador.class);
+	private Logger logger = Logger.getLogger(TabelaTotalizadorSemanal.class);
 
-	@FXML private TableView<LocalDate> tabelaTotalizador;
-	@FXML private TableColumn<LocalDate, String> colunaDataTotal;
-	@FXML private TableColumn<LocalDate, String> colunaTotal;
+	@FXML private TableView<Integer> tabelaSemanas;
+	@FXML private TableColumn<Integer, String> colunaDataTotal;
+	@FXML private TableColumn<Integer, String> colunaTotal;
 
 	private ObservableList<RegistroHoraObservable> listaRegistroHoras;
 
-	private ObservableMap<LocalDate, String> mapTotais;
+	private ObservableMap<Integer, String> mapTotais;
 
 	private ControleHorasService controleHorasService;
 
-	public TabelaTotalizador() throws IOException {
-		FXMLLoader loader = FXMLLoaderFactory.createLoader("view/TabelaTotalizador.fxml", TabelaTotalizador.class);
+	public TabelaTotalizadorSemanal() throws IOException {
+		FXMLLoader loader = FXMLLoaderFactory.createLoader("view/TabelaTotalizadorSemanal.fxml", TabelaTotalizadorSemanal.class);
 		loader.setRoot(this);
 		loader.setController(this);
 		loader.load();
@@ -59,16 +57,16 @@ public class TabelaTotalizador extends HBox{
 		mapTotais = FXCollections.observableHashMap();
 
 		// Permitindo selecionar múltiplas linhas
-		tabelaTotalizador.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		tabelaSemanas.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		controleHorasService = ControleHorasService.getInstance();
 
-		colunaDataTotal.setCellValueFactory(cellData -> new SimpleStringProperty(DateUtils.formatarData(cellData.getValue())));
+		colunaDataTotal.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
 
-		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<LocalDate,String>, ObservableValue<String>>() {
+		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Integer,String>, ObservableValue<String>>() {
 
 			@Override
-			public ObservableValue<String> call(CellDataFeatures<LocalDate, String> param) {
+			public ObservableValue<String> call(CellDataFeatures<Integer, String> param) {
 				return new SimpleStringProperty(mapTotais.get(param.getValue()));
 			}
 		});
@@ -83,17 +81,17 @@ public class TabelaTotalizador extends HBox{
 	public void atualizarTotalizador() {
 
 		// Limpa tabela
-		tabelaTotalizador.getItems().clear();
+		tabelaSemanas.getItems().clear();
 
 		// Cria map de data por lista de registroHoras
-		final Map<LocalDate, List<RegistroHoraObservable>> mapDatas = listaRegistroHoras
+		final Map<Integer, List<RegistroHoraObservable>> mapDatas = listaRegistroHoras
 				.stream()
-				.collect(Collectors.groupingBy(new Function<RegistroHoraObservable, LocalDate>() {
+				.collect(Collectors.groupingBy(new Function<RegistroHoraObservable, Integer>() {
 
 					@Override
-					public LocalDate apply(RegistroHoraObservable t) {
+					public Integer apply(RegistroHoraObservable t) {
 						try {
-							return DateUtils.parseData(t.getDia(), t.getMes(), t.getAno());
+							return DateUtils.getIdentificadorSemana(DateUtils.parseData(t.getDia(), t.getMes(), t.getAno()));
 						} catch (ParseException e) {
 							logger.error("Ocorreu um erro de parse de data", e);
 							throw new RuntimeException(e);
@@ -102,12 +100,12 @@ public class TabelaTotalizador extends HBox{
 				}));
 
 		// Preenchendo map com total de horas calculado
-		for (LocalDate data : mapDatas.keySet()) {
-			mapTotais.put(data, controleHorasService.calcularDuracaoTrabalhoFormatado(mapDatas.get(data)));
+		for (Integer semana : mapDatas.keySet()) {
+			mapTotais.put(semana, controleHorasService.calcularDuracaoTrabalhoFormatado(mapDatas.get(semana)));
 		}
 
 		// Adiciona datas à tabela
-		tabelaTotalizador.getItems().addAll(mapDatas.keySet());
+		tabelaSemanas.getItems().addAll(mapDatas.keySet());
 	}
 
 	public ObservableList<RegistroHoraObservable> getListaRegistroHoras() {
@@ -115,34 +113,18 @@ public class TabelaTotalizador extends HBox{
 	}
 
 	public Double getTotalSelecionado() {
-		return tabelaTotalizador.getSelectionModel().getSelectedItems()
+		return tabelaSemanas.getSelectionModel().getSelectedItems()
 				.stream()
-				.collect(Collectors.summingDouble(new ToDoubleFunction<LocalDate>() {
+				.collect(Collectors.summingDouble(new ToDoubleFunction<Integer>() {
 					@Override
-					public double applyAsDouble(LocalDate value) {
+					public double applyAsDouble(Integer value) {
 						return Double.valueOf(mapTotais.get(value).replace(",", "."));
 					}
 				}));
 	}
 
 	public void setOnSelecionarItem(EventHandler<MouseEvent> event) {
-		tabelaTotalizador.setOnMouseClicked(event);
+		tabelaSemanas.setOnMouseClicked(event);
 	}
 
-	public List<Double> getTotais() {
-		return mapTotais.values()
-				.stream()
-				.map(s -> Double.valueOf(s.replace(",", "."))).collect(Collectors.toList());
-	}
-
-	public List<Double> getTotaisMenosHoje() {
-		List<Double> totais = new ArrayList<>();
-
-		for (LocalDate data : mapTotais.keySet()) {
-			if (!data.equals(LocalDate.now())) {
-				totais.add(Double.valueOf(mapTotais.get(data).replace(",", ".")));
-			}
-		}
-		return totais;
-	}
 }

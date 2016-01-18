@@ -3,10 +3,13 @@ package workhourscontrol.client.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.time.temporal.WeekFields;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DateUtils {
 	public static final String formatoPadrao = "dd/MM/yyyy";
 	public static final String formatoPadraoDataHora = "dd/MM/yyyy hh:mm";
+	public static final String formatoPadraoHora = "HH:mm";
 
 	public static String formatarData(String dia, String mes, String ano, String formato) throws ParseException {
 		String dateString = dia + mes + ano;
@@ -51,20 +55,24 @@ public class DateUtils {
 		return formatarDataHora(dia, mes, ano, hora, minuto, formatoPadraoDataHora);
 	}
 
+	public static String formatarHora(LocalDateTime hora) {
+		return hora.format(DateTimeFormatter.ofPattern(formatoPadraoHora));
+	}
+
+	public static String formatarHoraAgora() {
+		return formatarHora(LocalDateTime.now());
+	}
+
 	public static String getDiaAsString(LocalDate data) {
-		return inserirZeroAEsquerda(data.get(ChronoField.DAY_OF_MONTH));
+		return workhourscontrol.client.util.StringUtils.inserirZeroAEsquerda(data.get(ChronoField.DAY_OF_MONTH));
 	}
 
 	public static String getMesAsString(LocalDate data) {
-		return inserirZeroAEsquerda(data.get(ChronoField.MONTH_OF_YEAR));
+		return workhourscontrol.client.util.StringUtils.inserirZeroAEsquerda(data.get(ChronoField.MONTH_OF_YEAR));
 	}
 
 	public static String getAnoAsString(LocalDate data) {
 		return String.valueOf(data.get(ChronoField.YEAR_OF_ERA));
-	}
-
-	private static String inserirZeroAEsquerda(int inteiro) {
-		return (inteiro < 10 ? "0" : "") + String.valueOf(inteiro);
 	}
 
 	public static LocalTime parseHora(String hora) {
@@ -80,6 +88,16 @@ public class DateUtils {
 			return 0d;
 		}
 		return (double)LocalTime.from(from).until(to, java.time.temporal.ChronoUnit.MINUTES) / 60;
+	}
+
+	/**
+	 * Obtém identificador da semana a partir de data
+	 * @param parseData
+	 * @return
+	 */
+	public static Integer getIdentificadorSemana(LocalDate data) {
+		WeekFields weekFields = WeekFields.of(Locale.getDefault());
+		return data.get(weekFields.weekOfMonth());
 	}
 
 }

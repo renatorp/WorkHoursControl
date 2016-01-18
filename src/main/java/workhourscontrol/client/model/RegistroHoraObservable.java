@@ -1,9 +1,13 @@
 package workhourscontrol.client.model;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
 
 public class RegistroHoraObservable extends RegistroHora{
@@ -113,5 +117,8 @@ public class RegistroHoraObservable extends RegistroHora{
 		this.lancadoProperty.set(lancado);
 	}
 
+	public LocalDate getData() throws ParseException {
+		return DateUtils.parseData(getDia(), getMes(), getAno());
+	}
 
 }
