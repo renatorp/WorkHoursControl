@@ -23,8 +23,9 @@ public class StringUtils {
 	}
 
 	public static String formatarRetornoDuracaoComoHoras(double numRegPorData) {
-		String s1 = String.valueOf((int) numRegPorData);
+		String prefixo = numRegPorData < 0 ? "-" : "";
+		String s1 = String.valueOf(Math.abs((int) numRegPorData));
 		String s2 = formatarRetornoMinutos(Math.abs(((numRegPorData%1) * 60) ));
-		return s1 + ":" + s2;
+		return prefixo + s1 + ":" + s2;
 	}
 }

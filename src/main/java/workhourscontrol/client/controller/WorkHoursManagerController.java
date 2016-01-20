@@ -249,6 +249,7 @@ public class WorkHoursManagerController {
 
 		double horaRestante = controleHorasService.calcularHorasTrabalhoRestantes(registrosHoje);
 		horasRestantesLabel.setText(workhourscontrol.client.util.StringUtils.formatarRetornoDuracaoComoHoras(horaRestante));
+
 	}
 
 	private void atualizarLabelSaldoHoras() {

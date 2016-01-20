@@ -8,13 +8,13 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import workhourscontrol.client.component.view.SimNaoCellFactory;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 
@@ -50,25 +50,7 @@ public class TabelaRegistroHora extends HBox{
 			}
 		});
 
-		colunaSync.setCellFactory(new Callback<TableColumn<RegistroHoraObservable,Boolean>, TableCell<RegistroHoraObservable,Boolean>>() {
-
-			@Override
-			public TableCell<RegistroHoraObservable, Boolean> call(TableColumn<RegistroHoraObservable, Boolean> param) {
-				return new TableCell<RegistroHoraObservable, Boolean>() {
-					protected void updateItem(Boolean item, boolean empty) {
-						if (!empty) {
-							if (item != null && item) {
-								this.setText("Sim");
-							} else {
-								this.setText("Não");
-							}
-						} else {
-							this.setText("");
-						}
-					};
-				};
-			}
-		});
+		colunaSync.setCellFactory(new SimNaoCellFactory<RegistroHoraObservable>());
 
 
 	}

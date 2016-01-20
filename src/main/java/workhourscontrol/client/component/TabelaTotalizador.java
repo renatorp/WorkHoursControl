@@ -21,14 +21,19 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import workhourscontrol.client.model.RegistroHoraObservable;
+import workhourscontrol.client.properties.PropertyAdapter;
 import workhourscontrol.client.service.ControleHorasService;
+import workhourscontrol.client.util.ClipboardUtils;
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 
@@ -37,7 +42,7 @@ public class TabelaTotalizador extends HBox{
 	private Logger logger = Logger.getLogger(TabelaTotalizador.class);
 
 	@FXML private TableView<LocalDate> tabelaTotalizador;
-	@FXML private TableColumn<LocalDate, String> colunaDataTotal;
+	@FXML private TableColumn<LocalDate, LocalDate> colunaDataTotal;
 	@FXML private TableColumn<LocalDate, String> colunaTotal;
 
 	private ObservableList<RegistroHoraObservable> listaRegistroHoras;
@@ -63,16 +68,53 @@ public class TabelaTotalizador extends HBox{
 
 		controleHorasService = ControleHorasService.getInstance();
 
-		colunaDataTotal.setCellValueFactory(cellData -> new SimpleStringProperty(DateUtils.formatarData(cellData.getValue())));
+		colunaDataTotal.setCellValueFactory( new Callback<TableColumn.CellDataFeatures<LocalDate,LocalDate>, ObservableValue<LocalDate>>() {
+			@Override
+			public ObservableValue<LocalDate> call(CellDataFeatures<LocalDate, LocalDate> param) {
+				return PropertyAdapter.getProperty(param.getValue(), "data");
+			}
+		});
+
+		colunaDataTotal.setCellFactory(new Callback<TableColumn<LocalDate,LocalDate>, TableCell<LocalDate,LocalDate>>() {
+
+			@Override
+			public TableCell<LocalDate, LocalDate> call(TableColumn<LocalDate, LocalDate> param) {
+				return new TableCell<LocalDate, LocalDate>() {
+					protected void updateItem(LocalDate item, boolean empty) {
+						if (!empty) {
+							setText(DateUtils.formatarData(item));
+						} else {
+							setText("");
+						}
+					};
+				};
+			}
+		});
 
 		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<LocalDate,String>, ObservableValue<String>>() {
-
 			@Override
 			public ObservableValue<String> call(CellDataFeatures<LocalDate, String> param) {
 				return new SimpleStringProperty(mapTotais.get(param.getValue()));
 			}
 		});
 
+
+		// Evento ao pressionar Ctrl + c
+		tabelaTotalizador.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+
+				if (event.isControlDown() && event.getCode().equals(KeyCode.C)) {
+
+					LocalDate data = tabelaTotalizador.getSelectionModel().getSelectedItem();
+					if (data != null) {
+						ClipboardUtils.adicionarStringEmClipboard(mapTotais.get(data));
+					}
+
+				}
+
+			}
+		});
 	}
 
 

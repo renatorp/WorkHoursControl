@@ -30,7 +30,7 @@ import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 
-public class TabelaTotalizadorSemanal extends HBox{
+public class TabelaTotalizadorSemanal extends HBox {
 
 	private Logger logger = Logger.getLogger(TabelaTotalizadorSemanal.class);
 
@@ -64,7 +64,6 @@ public class TabelaTotalizadorSemanal extends HBox{
 		colunaDataTotal.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
 
 		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Integer,String>, ObservableValue<String>>() {
-
 			@Override
 			public ObservableValue<String> call(CellDataFeatures<Integer, String> param) {
 				return new SimpleStringProperty(mapTotais.get(param.getValue()));
