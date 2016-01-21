@@ -27,13 +27,35 @@ public class IntegracaoService {
 
 	private ConfiguracoesAplicacao configuracaoAplicacao;
 
+	private ControleHoras controleHorasHttp;
+
 	/** Singleton */
 	public static IntegracaoService getInstance() {
 		if (Objects.isNull(integracaoService)) {
 			integracaoService = new IntegracaoService();
 			integracaoService.configuracaoAplicacao = MainApp.configuracoesAplicacao;
+			integracaoService.buildControleHorasHttp();
 		}
 		return integracaoService;
+	}
+
+	private void buildControleHorasHttp() {
+
+		try {
+
+			if (Objects.isNull(controleHorasHttp)) {
+
+				ControleHorasHttpBuilder builder = new ControleHorasHttpBuilder(getControleHorasImpl());
+
+				controleHorasHttp = builder.setProxy(configuracaoAplicacao.getProxyHost(),Integer.parseInt(configuracaoAplicacao.getProxyPort()))
+						.setCredenciaisProxy(configuracaoAplicacao.getProxyUser(),configuracaoAplicacao.getProxyPassword())
+						.setCredenciaisAcessoRemoto(configuracaoAplicacao.getLoginAplicacao(), configuracaoAplicacao.getPasswordAplicacao())
+						.build();
+			}
+		} catch(Exception e) {
+			logger.warn("Ocorreu um erro ao construir componente para integração, a integração não será realizada", e);
+		}
+
 	}
 
 	/**
@@ -41,18 +63,17 @@ public class IntegracaoService {
 	 * @param registros
 	 */
 	public void sincronizarRegistrosHora(List<RegistroHora> registros) {
-
-		ControleHorasHttpBuilder builder = new ControleHorasHttpBuilder(getControleHorasImpl());
-
-		ControleHoras controleHoras = builder.setProxy(configuracaoAplicacao.getProxyHost(),Integer.parseInt(configuracaoAplicacao.getProxyPort()))
-											 .setCredenciaisProxy(configuracaoAplicacao.getProxyUser(),configuracaoAplicacao.getProxyPassword())
-											 .setCredenciaisAcessoRemoto(configuracaoAplicacao.getLoginAplicacao(), configuracaoAplicacao.getPasswordAplicacao())
-											 .build();
-
-		controleHoras.registrarHoras(registros);
-		controleHoras.fecharConexao();
+		controleHorasHttp.registrarHoras(registros);
+		controleHorasHttp.fecharConexao();
 
 	}
+
+	public double obterSaldoHoras() {
+		double result = controleHorasHttp.obterSaldoHoras();
+		controleHorasHttp.fecharConexao();
+		return result;
+	}
+
 
 	/**
 	 * Aponta horas em planilha de acordo com implementação de ControleHoraPlanilha
@@ -69,14 +90,15 @@ public class IntegracaoService {
 	/**
 	 * Instancia implementação de Controle Horas
 	 * @return
+	 * @throws Exception
 	 */
-	private ControleHorasHttp getControleHorasImpl() {
+	private ControleHorasHttp getControleHorasImpl() throws Exception {
 		final String className = configuracaoAplicacao.getControleHorasClass();
 		try {
 			if (StringUtils.isBlank(className)) {
 				final String msg = "Propriedade controleHorasClass não encontrada";
-				logger.error(msg);
-				throw new RuntimeException(msg);
+				logger.warn(msg);
+				throw new Exception(msg);
 			}
 
 			return (ControleHorasHttp) Class.forName(className).newInstance();

@@ -32,7 +32,7 @@ public class MainApp extends Application{
 	public static final String NOME_PREFERENCIA_XML = "xmlPath";
 	private static final String PROPERTY_FILE = "propriedades.xml";
 
-	public static ConfiguracoesAplicacao configuracoesAplicacao;
+	public static ConfiguracoesAplicacao configuracoesAplicacao = new ConfiguracoesAplicacao();
 
 	private Stage primaryStage;
     private BorderPane rootLayout;
@@ -88,8 +88,13 @@ public class MainApp extends Application{
 	private void initConfig() {
 		try {
 			File arquivoPropriedades = new File(getPropertyFileName());
-			logger.info("Utilizando arquivo " + arquivoPropriedades.getAbsolutePath());
-			configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
+
+			if (arquivoPropriedades.exists()) {
+				logger.info("Utilizando arquivo " + arquivoPropriedades.getAbsolutePath());
+				configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
+			} else {
+				logger.warn("O arquivo de configurações '" + getPropertyFileName() + "' não foi encontrado ");
+			}
 		} catch(Exception e) {
 			logger.error("Ocorreu um erro ao carregar arquivo xml de configurações", e);
 			throw new RuntimeException(e);

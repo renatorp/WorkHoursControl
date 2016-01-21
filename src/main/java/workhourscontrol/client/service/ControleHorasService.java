@@ -9,9 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.util.DateUtils;
+import workhourscontrol.client.util.SaldoHorasHolder;
 import workhourscontrol.entity.RegistroHora;
 
 public class ControleHorasService {
+
+	private IntegracaoService integracaoService = IntegracaoService.getInstance();
 
 	private static ControleHorasService controleHorasService;
 
@@ -65,7 +68,7 @@ public class ControleHorasService {
 	/**
 	 * Calcula saldo de horas dadas a lista dos totais.
 	 */
-	public String calcularSaldoHoras(final List<Double> listaTotais) {
+	public double calcularSaldoHoras(final List<Double> listaTotais) {
 		Double totalHoras = listaTotais
 				.stream()
 				.collect(Collectors.summingDouble(d -> d.doubleValue()));
@@ -73,7 +76,13 @@ public class ControleHorasService {
 		int tamanho = listaTotais.size();
 
 		double saldo = totalHoras - (tamanho * 8) ;
-		return workhourscontrol.client.util.StringUtils.formatarRetornoDuracaoComoHoras(saldo);
+
+		Double saldoAnterior = SaldoHorasHolder.getSaldoHoras(() -> integracaoService.obterSaldoHoras() );
+		if (Objects.nonNull(saldoAnterior)) {
+			saldo += saldoAnterior;
+		}
+
+		return saldo;
 	}
 
 }

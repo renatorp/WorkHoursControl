@@ -10,4 +10,6 @@ public interface ControleHoras {
 
 	void fecharConexao();
 
+	double obterSaldoHoras();
+
 }

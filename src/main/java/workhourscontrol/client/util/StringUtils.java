@@ -22,10 +22,10 @@ public class StringUtils {
 		return workhourscontrol.client.util.StringUtils.inserirZeroAEsquerda(df.format(num));
 	}
 
-	public static String formatarRetornoDuracaoComoHoras(double numRegPorData) {
-		String prefixo = numRegPorData < 0 ? "-" : "";
-		String s1 = String.valueOf(Math.abs((int) numRegPorData));
-		String s2 = formatarRetornoMinutos(Math.abs(((numRegPorData%1) * 60) ));
+	public static String formatarRetornoDuracaoComoHoras(double numHoras) {
+		String prefixo = numHoras < 0 ? "-" : "";
+		String s1 = String.valueOf(Math.abs((int) numHoras));
+		String s2 = formatarRetornoMinutos(Math.abs(((numHoras%1) * 60) ));
 		return prefixo + s1 + ":" + s2;
 	}
 }

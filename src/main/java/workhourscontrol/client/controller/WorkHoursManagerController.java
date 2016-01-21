@@ -14,12 +14,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.dialog.Dialogs;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -27,12 +30,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import workhourscontrol.client.MainApp;
+import workhourscontrol.client.component.LabelAviso;
 import workhourscontrol.client.component.TabelaRegistroHora;
 import workhourscontrol.client.component.TabelaTotalizador;
 import workhourscontrol.client.component.TabelaTotalizadorSemanal;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.service.IntegracaoService;
+import workhourscontrol.client.thread.TaskExecutorService;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 import workhourscontrol.client.util.FileHelper;
 import workhourscontrol.entity.RegistroHora;
@@ -55,7 +60,10 @@ public class WorkHoursManagerController {
 
 	@FXML private Label labelTotal;
 	@FXML private Label horasRestantesLabel;
-	@FXML private Label saldoHorasLabel;
+	@FXML private LabelAviso saldoHorasLabel;
+
+	@FXML private Button btnSalvarPlanilha;
+	@FXML private Button btnSincronizar;
 
 	private LocalDate ultimaDataRegistro;
 
@@ -64,7 +72,6 @@ public class WorkHoursManagerController {
 
 		integracaoService = IntegracaoService.getInstance();
 		controleHorasService = ControleHorasService.getInstance();
-
 
 		tabelaRegistroHora.adicionarEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
@@ -82,6 +89,8 @@ public class WorkHoursManagerController {
 
 		tabelaTotalizador.setOnSelecionarItem(event -> labelTotal.setText(tabelaTotalizador.getTotalSelecionado().toString()));
 
+		saldoHorasLabel.setTesteDanger(valor -> valor < 0);
+		saldoHorasLabel.setTesteWarning(valor -> valor >= 5);
 	}
 
 	private void initHoursEdit(RegistroHoraObservable itemSelecionado) {
@@ -170,17 +179,33 @@ public class WorkHoursManagerController {
 
 
 
-    		integracaoService.sincronizarRegistrosHora(itensNaoLancados);
-    		this.mainApp.setNotSaved();
+    		Task<Void> task = new Task<Void>() {
+
+				@Override
+				protected Void call() throws Exception {
+					integracaoService.sincronizarRegistrosHora(itensNaoLancados);
+					return null;
+				}
+
+				protected void done() {
+					mainApp.setNotSaved();
+				};
+
+    		};
+
+    		btnSincronizar.disableProperty().bind(task.runningProperty());
+    		TaskExecutorService.executeTask(task);
 
     	}
 	}
+
 
 	/**
 	 * Sincroniza todos os itens com planilha
 	 */
 	@FXML
 	public void handleSincronizarPlanilha() {
+
 		List<RegistroHora> items = new ArrayList<RegistroHora>(tabelaRegistroHora.getItems());
 
     	if (!items.isEmpty()) {
@@ -188,12 +213,31 @@ public class WorkHoursManagerController {
     		File arquivo = obterArquivoPlanilha();
 
     		if (Objects.nonNull(arquivo)) {
-    			integracaoService.sincronizarRegistrosHoraComPlanilha(items, arquivo);
-    			Dialogs.create()
-	    			.title("Mensagem sucesso")
-	    			.masthead("Importado com sucesso...")
-	    			.message("Sincronização realizada com sucesso!!.")
-	    			.showInformation();
+
+    			Task<Void> task = new Task<Void>() {
+					@Override
+					protected Void call() throws Exception {
+						integracaoService.sincronizarRegistrosHoraComPlanilha(items, arquivo);
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						Platform.runLater(() ->
+								Dialogs.create()
+								.title("Mensagem sucesso")
+								.masthead("Importado com sucesso...")
+								.message("Sincronização realizada com sucesso!!.")
+								.showInformation()
+						);
+						super.done();
+					}
+				};
+
+				btnSalvarPlanilha.disableProperty().bind(task.runningProperty());
+
+				TaskExecutorService.executeTask(task);
+
     		}
     	}
 	}
@@ -254,7 +298,7 @@ public class WorkHoursManagerController {
 
 	private void atualizarLabelSaldoHoras() {
 		final List<Double> listaTotais = tabelaTotalizador.getTotaisMenosHoje();
-		saldoHorasLabel.setText(controleHorasService.calcularSaldoHoras(listaTotais));
+		saldoHorasLabel.setValor(controleHorasService.calcularSaldoHoras(listaTotais));
 	}
 
 

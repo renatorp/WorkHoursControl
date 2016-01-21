@@ -38,7 +38,11 @@ public class DateUtils {
 	}
 
 	public static String formatarData(LocalDate date) {
-		return date.format(DateTimeFormatter.ofPattern(formatoPadrao));
+		return formatarData(date, formatoPadrao);
+	}
+
+	public static String formatarData(LocalDate date, String formato) {
+		return date.format(DateTimeFormatter.ofPattern(formato));
 	}
 
 	public static LocalDate parseData(String dia, String mes, String ano) throws ParseException {
@@ -100,4 +104,11 @@ public class DateUtils {
 		return data.get(weekFields.weekOfMonth());
 	}
 
+	public static boolean isHoje(LocalDate data) {
+		return data.isEqual(LocalDate.now());
+	}
+
+	public static boolean isNotHoje(LocalDate data) {
+		return !isHoje(data);
+	}
 }

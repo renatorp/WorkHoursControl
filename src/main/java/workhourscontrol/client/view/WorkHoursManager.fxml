@@ -9,6 +9,7 @@
 <?import workhourscontrol.client.component.TabelaTotalizador?>
 <?import workhourscontrol.client.component.TabelaTotalizadorSemanal?>
 <?import workhourscontrol.client.component.TabelaRegistroHora?>
+<?import workhourscontrol.client.component.LabelAviso?>
 
 <AnchorPane fx:id="workHoursManagerLayout" prefHeight="585.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="workhourscontrol.client.controller.WorkHoursManagerController">
    <children>
@@ -24,12 +25,12 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleSincronizar" prefHeight="25.0" prefWidth="119.0" text="Sincronizar TUDO">
+            <Button mnemonicParsing="false" onAction="#handleSincronizar" prefHeight="25.0" prefWidth="119.0" text="Sincronizar TUDO" fx:id="btnSincronizar">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleSincronizarPlanilha" prefHeight="25.0" prefWidth="109.0" text="Salvar Planilha">
+            <Button mnemonicParsing="false" onAction="#handleSincronizarPlanilha" prefHeight="25.0" prefWidth="109.0" text="Salvar Planilha" fx:id="btnSalvarPlanilha">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
@@ -52,6 +53,6 @@
       <Label layoutX="196.0" layoutY="563.0" prefHeight="17.0" prefWidth="91.0" text="Horas restantes:" AnchorPane.bottomAnchor="5.0" />
       <Label fx:id="horasRestantesLabel" layoutX="287.0" layoutY="563.0" AnchorPane.bottomAnchor="5.0" />
       <Label layoutX="368.0" layoutY="563.0" prefHeight="17.0" prefWidth="91.0" text="Saldo de horas:" AnchorPane.bottomAnchor="5.0" />
-      <Label fx:id="saldoHorasLabel" layoutX="459.0" layoutY="563.0" prefHeight="17.0" prefWidth="40.0" AnchorPane.bottomAnchor="5.0" />
+      <LabelAviso fx:id="saldoHorasLabel" layoutX="459.0" layoutY="563.0" prefHeight="17.0" prefWidth="40.0" AnchorPane.bottomAnchor="5.0" />
    </children>
 </AnchorPane>

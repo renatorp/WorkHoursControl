@@ -13,8 +13,7 @@ public class PreferencesHelper {
      * Se tais prefêrencias não puderem  ser encontradas, ele retorna null.
      */
 	public static File getEnderecoArquivo(String chave) {
-		Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
-        String filePath = prefs.get(chave, null);
+		String filePath = getPref(chave);
         if (filePath != null) {
             return new File(filePath);
         } else {
@@ -35,5 +34,15 @@ public class PreferencesHelper {
         } else {
             prefs.remove(chave);
         }
+    }
+
+    public static String getPref(String chave) {
+    	Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    	return prefs.get(chave, null);
+    }
+
+    public static void setPref(String chave, String valor) {
+    	Preferences prefs = Preferences.userNodeForPackage(MainApp.class);
+    	prefs.put(chave, valor);
     }
 }

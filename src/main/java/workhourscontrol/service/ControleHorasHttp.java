@@ -1,7 +1,10 @@
 package workhourscontrol.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +20,10 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -107,6 +112,28 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Ocorreu um erro ao gerar HttpPost", e);
+			throw new RuntimeException( e);
+		}
+
+
+	}
+
+	private HttpGet montarHttpGet(List<NameValuePair> parameters, String url) {
+		try {
+
+			URIBuilder uriBuilder = new URIBuilder(url);
+			uriBuilder.addParameters(parameters);
+
+			HttpGet get = new HttpGet(uriBuilder.build());
+
+			get.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0");
+
+			get.setConfig(getRequestGlobalConfig());
+
+			return get;
+
+		} catch (URISyntaxException e) {
+			logger.error("Ocorreu um erro ao gerar HttpGet", e);
 			throw new RuntimeException( e);
 		}
 
@@ -241,6 +268,9 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	@Override
 	public void fecharConexao() {
 		try {
+
+			this.loggedIn = false;
+
 			if (httpClient != null) {
 				httpClient.close();
 			}
@@ -250,5 +280,56 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		}
 
 	}
+
+	@Override
+	public double obterSaldoHoras() {
+
+		// Usuário deve estar logado
+		logarUsuario();
+
+		// Vai no servidor para obter página que contém o desejado
+		String html = obterHtmlServidor();
+
+		// Faz o parse da página para obter o resultado
+		return parseHtml(html);
+
+	}
+
+	public abstract double parseHtml(String html);
+
+	private String obterHtmlServidor() {
+		try {
+			// Monta objeto para fazer o get request
+			HttpGet get = montarHttpGet(getParametrosSaldoHoras(), getUrlSaldoHoras());
+
+			// Obtém local context
+			HttpClientContext localContext = createLocalContext();
+
+			// Adiciona Cookie
+			get.addHeader("Cookie", getCookieHeader(cookieStore));
+
+			// Faz a requisição
+			HttpResponse response = httpClient.execute(get, localContext);
+
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+			//Extrai html do response
+			StringBuilder htmlResult = new StringBuilder();
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				htmlResult.append(line);
+			}
+
+			return htmlResult.toString();
+
+		} catch (IOException e) {
+			logger.error("Ocorreu um erro ao obter saldo de horas", e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	public abstract String getUrlSaldoHoras();
+	public abstract List<NameValuePair> getParametrosSaldoHoras();
 
 }

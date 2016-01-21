@@ -111,4 +111,10 @@ public class ControleHorasPlanilha implements ControleHoras {
 
 	}
 
+	@Override
+	public double obterSaldoHoras() {
+		// TODO Não implementado
+		return 0;
+	}
+
 }
