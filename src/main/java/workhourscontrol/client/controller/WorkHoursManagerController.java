@@ -65,7 +65,10 @@ public class WorkHoursManagerController {
 	@FXML private Button btnSalvarPlanilha;
 	@FXML private Button btnSincronizar;
 
+	@FXML private Label saldoHorasDescricaoLabel;
+
 	private LocalDate ultimaDataRegistro;
+
 
 	@FXML
 	public void initialize() {
@@ -298,7 +301,18 @@ public class WorkHoursManagerController {
 
 	private void atualizarLabelSaldoHoras() {
 		final List<Double> listaTotais = tabelaTotalizador.getTotaisMenosHoje();
-		saldoHorasLabel.setValor(controleHorasService.calcularSaldoHoras(listaTotais));
+		double saldoHorasMesAtual = controleHorasService.calcularSaldoHoras(listaTotais);
+		Double saldoHorasAnterior = controleHorasService.obterSaldoHorasMesAnterior();
+
+		// Exibe "*" quando não for possível obter o saldo de horas do servidor
+		if (Objects.isNull(saldoHorasAnterior)) {
+			saldoHorasDescricaoLabel.setText("*" + saldoHorasDescricaoLabel.getText());
+		} else {
+			saldoHorasMesAtual += saldoHorasAnterior;
+			saldoHorasDescricaoLabel.setText(saldoHorasDescricaoLabel.getText().replace("*", ""));
+		}
+
+		saldoHorasLabel.setValor(saldoHorasMesAtual);
 	}
 
 

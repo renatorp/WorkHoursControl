@@ -75,14 +75,15 @@ public class ControleHorasService {
 
 		int tamanho = listaTotais.size();
 
-		double saldo = totalHoras - (tamanho * 8) ;
+		return totalHoras - (tamanho * 8) ;
+	}
 
+	public Double obterSaldoHorasMesAnterior() {
 		Double saldoAnterior = SaldoHorasHolder.getSaldoHoras(() -> integracaoService.obterSaldoHoras() );
 		if (Objects.nonNull(saldoAnterior)) {
-			saldo += saldoAnterior;
+			return saldoAnterior;
 		}
-
-		return saldo;
+		return null;
 	}
 
 }
