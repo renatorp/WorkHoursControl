@@ -21,14 +21,14 @@ public class DateUtils {
 
 	public static String formatarData(String dia, String mes, String ano, String formato) throws ParseException {
 		String dateString = dia + mes + ano;
-		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddmmyyyy");
+		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddMMyyyy");
 		Date data = sdfPadrao.parse(dateString);
 		return new SimpleDateFormat(formato).format(data);
 	}
 
 	public static String formatarDataHora(String dia, String mes, String ano, String hora, String minuto, String formato) throws ParseException {
 		String dateString = dia + mes + ano + hora + minuto;
-		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddmmyyyyhhmm");
+		SimpleDateFormat sdfPadrao = new SimpleDateFormat("ddMMyyyyhhmm");
 		Date data = sdfPadrao.parse(dateString);
 		return new SimpleDateFormat(formato).format(data);
 	}

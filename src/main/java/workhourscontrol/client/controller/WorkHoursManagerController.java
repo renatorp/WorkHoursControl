@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
@@ -24,6 +26,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -38,6 +43,7 @@ import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.service.IntegracaoService;
 import workhourscontrol.client.thread.TaskExecutorService;
+import workhourscontrol.client.util.ClipboardUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 import workhourscontrol.client.util.FileHelper;
 import workhourscontrol.entity.RegistroHora;
@@ -67,6 +73,8 @@ public class WorkHoursManagerController {
 
 	@FXML private Label saldoHorasDescricaoLabel;
 
+	@FXML private TextField filtroObs;
+
 	private LocalDate ultimaDataRegistro;
 
 
@@ -90,10 +98,51 @@ public class WorkHoursManagerController {
 
 		});
 
+		// Atribui evento para totalizar itens selecionados nas tabelas
 		tabelaTotalizador.setOnSelecionarItem(event -> labelTotal.setText(tabelaTotalizador.getTotalSelecionado().toString()));
+		tabelaRegistroHora.setOnSelecionarItem(event -> {
+			final Double totalSelecionado = tabelaRegistroHora.getTotalSelecionado(r -> {
+				return controleHorasService.calcularDuracaoTrabalho(r);
+			});
+			labelTotal.setText(workhourscontrol.client.util.StringUtils.formatarRetornoDuracao(totalSelecionado));
+		});
 
 		saldoHorasLabel.setTesteDanger(valor -> valor < 0);
 		saldoHorasLabel.setTesteWarning(valor -> valor >= 5);
+
+		// Inicializando filtro
+		filtroObs.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				tabelaRegistroHora.getItems().setPredicate( registro -> {
+
+					if (StringUtils.isBlank(newValue)) {
+						return true;
+					}
+
+					if (workhourscontrol.client.util.StringUtils.containsNice(registro.getObservacao(), newValue)) {
+						return true;
+					}
+
+					return false;
+
+				});
+
+			}
+		});
+
+		// Evento ao pressionar Ctrl + c
+		tabelaRegistroHora.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.isControlDown() && event.getCode().equals(KeyCode.C)) {
+					ClipboardUtils.adicionarStringEmClipboard(labelTotal.getText());
+				}
+
+			}
+		});
+
 	}
 
 	private void initHoursEdit(RegistroHoraObservable itemSelecionado) {
@@ -152,10 +201,10 @@ public class WorkHoursManagerController {
 
 	@FXML
 	public void handleDeletarRegistro() {
-		int selectedIndex = tabelaRegistroHora.getSelectedIndex();
+		List<RegistroHoraObservable> selectedItems = tabelaRegistroHora.getSelectedItems();
 
-    	if (selectedIndex >= 0) {
-    		tabelaRegistroHora.getItems().remove(selectedIndex);
+    	if (!selectedItems.isEmpty()) {
+    		this.mainApp.getRegistrosHora().removeAll(selectedItems);
     		tabelaTotalizador.atualizarTotalizador();
     		tabelaTotalizadorSemanal.atualizarTotalizador();
     		atualizarLabelHorasRestantes();

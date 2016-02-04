@@ -204,7 +204,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		registrarHorasIndividualmente(registros);
 	}
 
-	private void registrarHorasIndividualmente(List<RegistroHora> registros) {
+	protected void registrarHorasIndividualmente(List<RegistroHora> registros) {
 		for (RegistroHora registroHora : registros) {
 			registrarHora(registroHora);
 		}

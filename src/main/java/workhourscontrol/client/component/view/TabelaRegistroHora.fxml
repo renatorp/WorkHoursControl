@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.*?>
 
-<fx:root xmlns:fx="http://javafx.com/fxml/1" type="HBox">
+<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
          <children>
             <TableView fx:id="tabelaRegistroHora" prefHeight="244.0" prefWidth="673.0" HBox.hgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="colunaData" prefWidth="115.0" text="Data" />
                 <TableColumn fx:id="colunaHoraInicio" prefWidth="129.0" text="Hora Início" />
                   <TableColumn fx:id="colunaHoraFim" prefWidth="179.0" text="Hora Fim" />
+            <TableColumn fx:id="colunaObs" prefWidth="179.0" text="Obs" />
                   <TableColumn fx:id="colunaSync" prefWidth="48.0" text="Sync" />
               </columns>
                <columnResizePolicy>
@@ -18,4 +21,3 @@
             </TableView>
          </children>
 </fx:root>
-

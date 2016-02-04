@@ -28,4 +28,11 @@ public class StringUtils {
 		String s2 = formatarRetornoMinutos(Math.abs(((numHoras%1) * 60) ));
 		return prefixo + s1 + ":" + s2;
 	}
+
+	/**
+	 * Verifica se uma string está contida na outra independente de espaços no início e fim e case sensitivity
+	 */
+	public static boolean containsNice(String container, String content) {
+		return org.apache.commons.lang3.StringUtils.contains(container.trim().toLowerCase(), content.trim().toLowerCase());
+	}
 }
