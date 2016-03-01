@@ -8,6 +8,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.log4j.Logger;
+
 import workhourscontrol.client.model.ListaRegistroHoraWrapper;
 import workhourscontrol.client.model.RegistroHoraObservable;
 
@@ -17,6 +19,8 @@ import workhourscontrol.client.model.RegistroHoraObservable;
  *
  */
 public class XmlService {
+
+	private Logger logger = Logger.getLogger(XmlService.class);
 
 	private static XmlService xmlService;
 
@@ -59,7 +63,8 @@ public class XmlService {
 			return (E)un.unmarshal(arquivo);
 
 		} catch (Exception e) {
-			throw new Exception("Ocorreu um erro ao carregar XML", e);
+			logger.error("Ocorreu um erro ao carregar XML", e);
+			throw e;
 		}
 	}
 

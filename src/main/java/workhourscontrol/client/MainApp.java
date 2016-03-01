@@ -1,6 +1,7 @@
 package workhourscontrol.client;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -167,10 +168,14 @@ public class MainApp extends Application{
      * Carrega ultimo xml aberto, se houver
      */
 	private void carregarXmlPreferencias() {
-		arquivoAberto = PreferencesHelper.getEnderecoArquivo(NOME_PREFERENCIA_XML);
-		  if (Objects.nonNull(arquivoAberto)) {
-			  carregarRegistrosDoArquivo(arquivoAberto);
-		  }
+		try {
+			arquivoAberto = PreferencesHelper.getEnderecoArquivo(NOME_PREFERENCIA_XML);
+			if (Objects.nonNull(arquivoAberto)) {
+				carregarRegistrosDoArquivo(arquivoAberto);
+			}
+		} catch (Exception e) {
+			logger.warn("Não foi possível carregar último arquivo xml aberto.", e);
+		}
 	}
 
     public ObservableList<RegistroHoraObservable> getRegistrosHora() {
@@ -197,15 +202,11 @@ public class MainApp extends Application{
 
     /**
      * Carrega registros do arquivo xml
+     * @throws Exception
      */
-    public void carregarRegistrosDoArquivo(File file) {
-    	try {
-			registrosHora.addAll(xmlService.carregarRegistroHoraXml(file));
-			saved.set(true);
-		} catch (Exception e) {
-			logger.error("Ocorreu um erro ao carregar arquivo xml", e);
-			throw new RuntimeException(e);
-		}
+    public void carregarRegistrosDoArquivo(File file) throws Exception {
+		registrosHora.addAll(xmlService.carregarRegistroHoraXml(file));
+		saved.set(true);
     }
 
 	public void limparRegistros() {
@@ -245,11 +246,16 @@ public class MainApp extends Application{
 	}
 
 	public void carregar() {
-		File arquivo = FileHelper.chooseFileForOpening(getPrimaryStage(), "*.xml", "XML files (*.xml)", getDiretorioArquivoAberto());
-		if (Objects.nonNull(arquivo)) {
-			limparRegistros();
-			carregarRegistrosDoArquivo(arquivo);
-			setArquivoAberto(arquivo);
+		try {
+			File arquivo = FileHelper.chooseFileForOpening(getPrimaryStage(), "*.xml", "XML files (*.xml)", getDiretorioArquivoAberto());
+			if (Objects.nonNull(arquivo)) {
+				limparRegistros();
+				carregarRegistrosDoArquivo(arquivo);
+				setArquivoAberto(arquivo);
+			}
+		} catch (Exception e) {
+			logger.error("Ocorreu um erro ao carregar arquivo xml", e);
+			throw new RuntimeException(e);
 		}
 	}
 
