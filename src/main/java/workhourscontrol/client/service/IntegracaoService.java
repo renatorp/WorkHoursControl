@@ -15,9 +15,10 @@ import workhourscontrol.service.ControleHorasHttp;
 import workhourscontrol.service.ControleHorasHttpBuilder;
 import workhourscontrol.service.ControleHorasPlanilha;
 import workhourscontrol.service.ControleHorasPlanilhaBuilder;
+import workhourscontrol.strategy.MesclagemHorariosStrategy;
 
 /**
- * Serviço responsável por fazer o lançamento das horas
+ * Serviï¿½o responsï¿½vel por fazer o lanï¿½amento das horas
  */
 public class IntegracaoService {
 
@@ -50,16 +51,17 @@ public class IntegracaoService {
 				controleHorasHttp = builder.setProxy(configuracaoAplicacao.getProxyHost(),Integer.parseInt(configuracaoAplicacao.getProxyPort()))
 						.setCredenciaisProxy(configuracaoAplicacao.getProxyUser(),configuracaoAplicacao.getProxyPassword())
 						.setCredenciaisAcessoRemoto(configuracaoAplicacao.getLoginAplicacao(), configuracaoAplicacao.getPasswordAplicacao())
+						.addAjusteHorasStrategy(new MesclagemHorariosStrategy())
 						.build();
 			}
 		} catch(Exception e) {
-			logger.warn("Ocorreu um erro ao construir componente para integração, a integração não será realizada", e);
+			logger.warn("Ocorreu um erro ao construir componente para integraï¿½ï¿½o, a integraï¿½ï¿½o nï¿½o serï¿½ realizada", e);
 		}
 
 	}
 
 	/**
-	 * Aponta horas em sistema de acordo com implementação de ControleHorasHttp
+	 * Aponta horas em sistema de acordo com implementaï¿½ï¿½o de ControleHorasHttp
 	 * @param registros
 	 */
 	public void sincronizarRegistrosHora(List<RegistroHora> registros) {
@@ -76,7 +78,7 @@ public class IntegracaoService {
 
 
 	/**
-	 * Aponta horas em planilha de acordo com implementação de ControleHoraPlanilha
+	 * Aponta horas em planilha de acordo com implementaï¿½ï¿½o de ControleHoraPlanilha
 	 */
 	public void sincronizarRegistrosHoraComPlanilha(List<RegistroHora> registros, File arquivo) {
 		ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
@@ -88,7 +90,7 @@ public class IntegracaoService {
 
 
 	/**
-	 * Instancia implementação de Controle Horas
+	 * Instancia implementaï¿½ï¿½o de Controle Horas
 	 * @return
 	 * @throws Exception
 	 */
@@ -96,7 +98,7 @@ public class IntegracaoService {
 		final String className = configuracaoAplicacao.getControleHorasClass();
 		try {
 			if (StringUtils.isBlank(className)) {
-				final String msg = "Propriedade controleHorasClass não encontrada";
+				final String msg = "Propriedade controleHorasClass nï¿½o encontrada";
 				logger.warn(msg);
 				throw new Exception(msg);
 			}
@@ -108,7 +110,7 @@ public class IntegracaoService {
 			throw new RuntimeException(e);
 
 		} catch (ClassNotFoundException e) {
-			logger.error("Classe " + className + " não encontrada.", e);
+			logger.error("Classe " + className + " nï¿½o encontrada.", e);
 			throw new RuntimeException(e);
 		}
 	}

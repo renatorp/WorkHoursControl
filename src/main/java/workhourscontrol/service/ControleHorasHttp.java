@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -36,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
+import workhourscontrol.strategy.AjusteHorasStrategy;
 
 public abstract class ControleHorasHttp implements ControleHoras {
 
@@ -63,7 +65,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 				DefaultProxyRoutePlanner routePlanner = criarRoutePlanner();
 				builder.setRoutePlanner(routePlanner);
 
-				//Definindo autentiação para acesso ao host
+				//Definindo autentiaï¿½ï¿½o para acesso ao host
 				CredentialsProvider credsProvider = criarCredenciais();
 				builder.setDefaultCredentialsProvider(credsProvider);
 
@@ -92,6 +94,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			System.out.println(EntityUtils.toString(r.getEntity()));
 
 		} catch (IOException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu um erro ao efetuar login", e);
 			throw new RuntimeException(e);
 		}
@@ -111,6 +114,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			return post;
 
 		} catch (UnsupportedEncodingException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu um erro ao gerar HttpPost", e);
 			throw new RuntimeException( e);
 		}
@@ -133,6 +137,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			return get;
 
 		} catch (URISyntaxException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu um erro ao gerar HttpGet", e);
 			throw new RuntimeException( e);
 		}
@@ -177,6 +182,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			registro.setLancado(true);
 
 		} catch (IOException | ParseException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu ao registrar hora", e);
 			throw new RuntimeException(e);
 		}
@@ -200,10 +206,30 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 	@Override
 	public void registrarHoras(List<RegistroHora> registros) {
+		registros = antesDeRegistrar(registros);
 		logarUsuario();
 		registrarHorasIndividualmente(registros);
 	}
 
+	protected List<RegistroHora> antesDeRegistrar(List<RegistroHora> registros) {
+		registros = prepararListaRegistros(registros);
+		registros = aplicarStrategies(registros);
+		return registros;
+	}
+
+	private List<RegistroHora> aplicarStrategies(List<RegistroHora> registros) {
+		if (CollectionUtils.isNotEmpty(parametros.getAjusteHoratrategies())) {
+			for (AjusteHorasStrategy strategy : parametros.getAjusteHoratrategies()) {
+				registros = strategy.ajustarRegistros(registros);
+			}
+		}
+		return registros;
+	}
+
+	protected List<RegistroHora> prepararListaRegistros(List<RegistroHora> registros) {
+		return registros;
+	}
+	
 	protected void registrarHorasIndividualmente(List<RegistroHora> registros) {
 		for (RegistroHora registroHora : registros) {
 			registrarHora(registroHora);
@@ -275,6 +301,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 				httpClient.close();
 			}
 		} catch (IOException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu ao fechar httpClient", e);
 			throw new RuntimeException(e);
 		}
@@ -284,13 +311,13 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	@Override
 	public double obterSaldoHoras() {
 
-		// Usuário deve estar logado
+		// Usuï¿½rio deve estar logado
 		logarUsuario();
 
-		// Vai no servidor para obter página que contém o desejado
+		// Vai no servidor para obter pï¿½gina que contï¿½m o desejado
 		String html = obterHtmlServidor();
 
-		// Faz o parse da página para obter o resultado
+		// Faz o parse da pï¿½gina para obter o resultado
 		return parseHtml(html);
 
 	}
@@ -302,13 +329,13 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			// Monta objeto para fazer o get request
 			HttpGet get = montarHttpGet(getParametrosSaldoHoras(), getUrlSaldoHoras());
 
-			// Obtém local context
+			// Obtï¿½m local context
 			HttpClientContext localContext = createLocalContext();
 
 			// Adiciona Cookie
 			get.addHeader("Cookie", getCookieHeader(cookieStore));
 
-			// Faz a requisição
+			// Faz a requisiï¿½ï¿½o
 			HttpResponse response = httpClient.execute(get, localContext);
 
 
@@ -324,6 +351,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			return htmlResult.toString();
 
 		} catch (IOException e) {
+			// FIXME: tratar melhor exceÃ§Ã£o
 			logger.error("Ocorreu um erro ao obter saldo de horas", e);
 			throw new RuntimeException(e);
 		}

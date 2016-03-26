@@ -1,5 +1,9 @@
 package workhourscontrol.service;
 
+import java.util.List;
+
+import workhourscontrol.strategy.AjusteHorasStrategy;
+
 public class ParametrosControleHorasHttp {
 
 	private boolean usarProxy;
@@ -9,6 +13,7 @@ public class ParametrosControleHorasHttp {
 	private String proxyPassword;
 	private String user;
 	private String password;
+	private List<AjusteHorasStrategy> ajusteHoratrategies;
 
 	public String getUser() {
 		return user;
@@ -51,6 +56,12 @@ public class ParametrosControleHorasHttp {
 	}
 	public String getProxyUser() {
 		return proxyUser;
+	}
+	public List<AjusteHorasStrategy> getAjusteHoratrategies() {
+		return ajusteHoratrategies;
+	}
+	public void setAjusteHoratrategies(List<AjusteHorasStrategy> ajusteHoratrategies) {
+		this.ajusteHoratrategies = ajusteHoratrategies;
 	}
 
 }

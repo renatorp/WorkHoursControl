@@ -65,5 +65,61 @@ public class RegistroHora {
 	public void setLancado(Boolean lancado) {
 		this.lancado = lancado;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ano == null) ? 0 : ano.hashCode());
+		result = prime * result + ((dia == null) ? 0 : dia.hashCode());
+		result = prime * result + ((horaFim == null) ? 0 : horaFim.hashCode());
+		result = prime * result + ((horaInicio == null) ? 0 : horaInicio.hashCode());
+		result = prime * result + ((mes == null) ? 0 : mes.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegistroHora other = (RegistroHora) obj;
+		if (ano == null) {
+			if (other.ano != null)
+				return false;
+		} else if (!ano.equals(other.ano))
+			return false;
+		if (dia == null) {
+			if (other.dia != null)
+				return false;
+		} else if (!dia.equals(other.dia))
+			return false;
+		if (horaFim == null) {
+			if (other.horaFim != null)
+				return false;
+		} else if (!horaFim.equals(other.horaFim))
+			return false;
+		if (horaInicio == null) {
+			if (other.horaInicio != null)
+				return false;
+		} else if (!horaInicio.equals(other.horaInicio))
+			return false;
+		if (mes == null) {
+			if (other.mes != null)
+				return false;
+		} else if (!mes.equals(other.mes))
+			return false;
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 
+	
 }

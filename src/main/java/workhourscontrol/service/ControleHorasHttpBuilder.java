@@ -1,5 +1,8 @@
 package workhourscontrol.service;
 
+import java.util.ArrayList;
+
+import workhourscontrol.strategy.AjusteHorasStrategy;
 
 public class ControleHorasHttpBuilder implements ControleHorasBuilder{
 
@@ -8,6 +11,7 @@ public class ControleHorasHttpBuilder implements ControleHorasBuilder{
 
 	public ControleHorasHttpBuilder(ControleHorasHttp controleHoras) {
 		parametros = new ParametrosControleHorasHttp();
+		parametros.setAjusteHoratrategies(new ArrayList<>());
 		this.controleHoras = controleHoras;
 	}
 
@@ -27,6 +31,11 @@ public class ControleHorasHttpBuilder implements ControleHorasBuilder{
 	public ControleHorasHttpBuilder setCredenciaisAcessoRemoto(String user, String password) {
 		parametros.setUser(user);
 		parametros.setPassword(password);
+		return this;
+	}
+	
+	public ControleHorasHttpBuilder addAjusteHorasStrategy(AjusteHorasStrategy ajusteHorasStrategy) {
+		this.parametros.getAjusteHoratrategies().add(ajusteHorasStrategy);
 		return this;
 	}
 
