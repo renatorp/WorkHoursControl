@@ -13,7 +13,7 @@ public class ParametrosControleHorasHttp {
 	private String proxyPassword;
 	private String user;
 	private String password;
-	private List<AjusteHorasStrategy> ajusteHoratrategies;
+	private List<AjusteHorasStrategy> ajusteHoraStrategies;
 
 	public String getUser() {
 		return user;
@@ -58,10 +58,10 @@ public class ParametrosControleHorasHttp {
 		return proxyUser;
 	}
 	public List<AjusteHorasStrategy> getAjusteHoratrategies() {
-		return ajusteHoratrategies;
+		return ajusteHoraStrategies;
 	}
-	public void setAjusteHoratrategies(List<AjusteHorasStrategy> ajusteHoratrategies) {
-		this.ajusteHoratrategies = ajusteHoratrategies;
+	public void setAjusteHoratrategies(List<AjusteHorasStrategy> ajusteHoraStrategies) {
+		this.ajusteHoraStrategies = ajusteHoraStrategies;
 	}
 
 }
