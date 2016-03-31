@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
@@ -16,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
@@ -31,11 +33,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
+import workhourscontrol.exception.ControleHorasException;
 
 public abstract class ControleHorasHttp implements ControleHoras {
 
@@ -76,7 +78,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 	}
 
-	private void login() {
+	private void login() throws ControleHorasException {
 
 		try {
 			httpClient = gerarHttpClient();
@@ -88,55 +90,42 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			HttpClientContext localContext = createLocalContext();
 
 			HttpResponse r = httpClient.execute(post, localContext);
-			System.out.println(r.getStatusLine().getStatusCode());
-			System.out.println(EntityUtils.toString(r.getEntity()));
+
+			if (Objects.isNull(getCookieHeader(cookieStore))) {
+				throw new ControleHorasException("Não houve sucesso na autenticação");
+			}
 
 		} catch (IOException e) {
-			logger.error("Ocorreu um erro ao efetuar login", e);
-			throw new RuntimeException(e);
+			throw new ControleHorasException("Ocorreu um erro ao efetuar o login.", e);
 		}
 	}
 
-	private HttpPost montarHttpPost(List<NameValuePair> parameters, String url) {
-		try {
+	private HttpPost montarHttpPost(List<NameValuePair> parameters, String url) throws UnsupportedEncodingException {
 
-			HttpPost post = new HttpPost(url);
+		HttpPost post = new HttpPost(url);
 
-			post.setEntity(new UrlEncodedFormEntity(parameters));
+		post.setEntity(new UrlEncodedFormEntity(parameters));
 
-			post.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0");
+		post.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0");
 
-			post.setConfig(getRequestGlobalConfig());
+		post.setConfig(getRequestGlobalConfig());
 
-			return post;
-
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Ocorreu um erro ao gerar HttpPost", e);
-			throw new RuntimeException( e);
-		}
-
+		return post;
 
 	}
 
-	private HttpGet montarHttpGet(List<NameValuePair> parameters, String url) {
-		try {
+	private HttpGet montarHttpGet(List<NameValuePair> parameters, String url) throws URISyntaxException {
 
-			URIBuilder uriBuilder = new URIBuilder(url);
-			uriBuilder.addParameters(parameters);
+		URIBuilder uriBuilder = new URIBuilder(url);
+		uriBuilder.addParameters(parameters);
 
-			HttpGet get = new HttpGet(uriBuilder.build());
+		HttpGet get = new HttpGet(uriBuilder.build());
 
-			get.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0");
+		get.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0");
 
-			get.setConfig(getRequestGlobalConfig());
+		get.setConfig(getRequestGlobalConfig());
 
-			return get;
-
-		} catch (URISyntaxException e) {
-			logger.error("Ocorreu um erro ao gerar HttpGet", e);
-			throw new RuntimeException( e);
-		}
-
+		return get;
 
 	}
 
@@ -163,7 +152,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	}
 
 
-	protected final void registrarHora(RegistroHora registro) {
+	protected final void registrarHora(RegistroHora registro) throws ControleHorasException {
 
 		try {
 			HttpPost post = montarHttpPost(montarParametrosRegistroHora(registro), getUrlRegistroHora());
@@ -177,8 +166,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 			registro.setLancado(true);
 
 		} catch (IOException | ParseException e) {
-			logger.error("Ocorreu ao registrar hora", e);
-			throw new RuntimeException(e);
+			throw new ControleHorasException("Ocorreu ao registrar hora", e);
 		}
 	}
 
@@ -199,12 +187,18 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	public abstract String getUrlRegistroHora();
 
 	@Override
-	public void registrarHoras(List<RegistroHora> registros) {
-		logarUsuario();
-		registrarHorasIndividualmente(registros);
+	public void registrarHoras(List<RegistroHora> registros) throws ControleHorasException {
+		try {
+			logarUsuario();
+			registrarHorasIndividualmente(registros);
+		} catch (RuntimeException e) {
+			throw new ControleHorasException(e);
+		} catch (Error e) {
+			throw new ControleHorasException(e);
+		}
 	}
 
-	protected void registrarHorasIndividualmente(List<RegistroHora> registros) {
+	protected void registrarHorasIndividualmente(List<RegistroHora> registros) throws ControleHorasException {
 		for (RegistroHora registroHora : registros) {
 			registrarHora(registroHora);
 		}
@@ -243,7 +237,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 	public abstract String getNomeParametroLogin();
 
-	private void logarUsuario() {
+	private void logarUsuario() throws ControleHorasException {
 		if (!loggedIn) {
 			login();
 			this.loggedIn = true;
@@ -282,51 +276,52 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	}
 
 	@Override
-	public double obterSaldoHoras() {
+	public double obterSaldoHoras() throws ControleHorasException {
 
-		// Usuário deve estar logado
-		logarUsuario();
+		try {
+			// Usuário deve estar logado
+			logarUsuario();
 
-		// Vai no servidor para obter página que contém o desejado
-		String html = obterHtmlServidor();
+			// Vai no servidor para obter página que contém o desejado
+			String html = obterHtmlServidor();
 
-		// Faz o parse da página para obter o resultado
-		return parseHtml(html);
+			// Faz o parse da página para obter o resultado
+			return parseHtml(html);
+
+		} catch (Throwable e) {
+			throw new ControleHorasException("Ocorreu um erro ao obter saldo de horas", e);
+		}
 
 	}
 
 	public abstract double parseHtml(String html);
 
-	private String obterHtmlServidor() {
-		try {
-			// Monta objeto para fazer o get request
-			HttpGet get = montarHttpGet(getParametrosSaldoHoras(), getUrlSaldoHoras());
+	private String obterHtmlServidor() throws URISyntaxException, ClientProtocolException, IOException {
 
-			// Obtém local context
-			HttpClientContext localContext = createLocalContext();
+		// Monta objeto para fazer o get request
+		HttpGet get = montarHttpGet(getParametrosSaldoHoras(), getUrlSaldoHoras());
 
-			// Adiciona Cookie
-			get.addHeader("Cookie", getCookieHeader(cookieStore));
+		// Obtém local context
+		HttpClientContext localContext = createLocalContext();
 
-			// Faz a requisição
-			HttpResponse response = httpClient.execute(get, localContext);
+		// Adiciona Cookie
+		get.addHeader("Cookie", getCookieHeader(cookieStore));
+
+		// Faz a requisição
+		HttpResponse response = httpClient.execute(get, localContext);
 
 
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-			//Extrai html do response
-			StringBuilder htmlResult = new StringBuilder();
-			String line = "";
-			while ((line = rd.readLine()) != null) {
-				htmlResult.append(line);
-			}
-
-			return htmlResult.toString();
-
-		} catch (IOException e) {
-			logger.error("Ocorreu um erro ao obter saldo de horas", e);
-			throw new RuntimeException(e);
+		//Extrai html do response
+		StringBuilder htmlResult = new StringBuilder();
+		String line = "";
+		while ((line = rd.readLine()) != null) {
+			htmlResult.append(line);
 		}
+
+		return htmlResult.toString();
+
 	}
 
 	public abstract String getUrlSaldoHoras();

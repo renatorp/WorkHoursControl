@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import workhourscontrol.client.ConfiguracoesAplicacao;
 import workhourscontrol.client.MainApp;
 import workhourscontrol.entity.RegistroHora;
+import workhourscontrol.exception.ControleHorasException;
 import workhourscontrol.service.ControleHoras;
 import workhourscontrol.service.ControleHorasHttp;
 import workhourscontrol.service.ControleHorasHttpBuilder;
@@ -63,15 +64,24 @@ public class IntegracaoService {
 	 * @param registros
 	 */
 	public void sincronizarRegistrosHora(List<RegistroHora> registros) {
-		controleHorasHttp.registrarHoras(registros);
-		controleHorasHttp.fecharConexao();
+		try {
+			controleHorasHttp.registrarHoras(registros);
+			controleHorasHttp.fecharConexao();
+		} catch (ControleHorasException e) {
+			logger.error("Erro ao sincronizar registros.", e);
+		}
 
 	}
 
 	public double obterSaldoHoras() {
-		double result = controleHorasHttp.obterSaldoHoras();
-		controleHorasHttp.fecharConexao();
-		return result;
+		try {
+			double result = controleHorasHttp.obterSaldoHoras();
+			controleHorasHttp.fecharConexao();
+			return result;
+		} catch (ControleHorasException e) {
+			logger.error("Erro ao obter saldo de horas.", e);
+		}
+		return 0;
 	}
 
 
@@ -79,11 +89,15 @@ public class IntegracaoService {
 	 * Aponta horas em planilha de acordo com implementação de ControleHoraPlanilha
 	 */
 	public void sincronizarRegistrosHoraComPlanilha(List<RegistroHora> registros, File arquivo) {
-		ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
-		builder.setPlanilha(arquivo);
-		ControleHoras controleHorasPlanilha = builder.build();
-		controleHorasPlanilha.registrarHoras(registros);
-		controleHorasPlanilha.fecharConexao();
+		try {
+			ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
+			builder.setPlanilha(arquivo);
+			ControleHoras controleHorasPlanilha = builder.build();
+			controleHorasPlanilha.registrarHoras(registros);
+			controleHorasPlanilha.fecharConexao();
+		} catch (ControleHorasException e) {
+			logger.error("Erro ao sincronizar registros com planilha.", e);
+		}
 	}
 
 
