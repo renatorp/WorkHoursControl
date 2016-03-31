@@ -66,9 +66,10 @@ public class IntegracaoService {
 	public void sincronizarRegistrosHora(List<RegistroHora> registros) {
 		try {
 			controleHorasHttp.registrarHoras(registros);
-			controleHorasHttp.fecharConexao();
 		} catch (ControleHorasException e) {
 			logger.error("Erro ao sincronizar registros.", e);
+		} finally {
+			controleHorasHttp.fecharConexao();
 		}
 
 	}
@@ -76,10 +77,11 @@ public class IntegracaoService {
 	public double obterSaldoHoras() {
 		try {
 			double result = controleHorasHttp.obterSaldoHoras();
-			controleHorasHttp.fecharConexao();
 			return result;
 		} catch (ControleHorasException e) {
 			logger.error("Erro ao obter saldo de horas.", e);
+		} finally {
+			controleHorasHttp.fecharConexao();
 		}
 		return 0;
 	}
