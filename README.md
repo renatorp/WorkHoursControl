@@ -8,3 +8,9 @@ java -jar -DarquivoPropriedades=C:\local\propriedades.xml WorkHoursControl.jar
 
 - Ao informar a propriedade urlPlanilha, ao clicar em salvar planilha, sempre será salvo na mesma.
 
+- Para gerar executável, executar a seguinte task jfx:native do maven.
+
+- É obrigatório informar no arquivo xml de propriedades a localização da implementação da classe que faz a integração via http.
+
+- O projeto [work-hours-control-integration](https://github.com/renatorp/work-hours-control-integration) é uma dependência dessa aplicação.
+
