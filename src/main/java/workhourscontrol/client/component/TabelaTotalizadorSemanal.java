@@ -27,8 +27,8 @@ import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.service.ControleHorasService;
-import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
+import workhourscontrol.util.DateUtils;
 
 public class TabelaTotalizadorSemanal extends HBox {
 

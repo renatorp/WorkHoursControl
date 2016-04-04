@@ -9,7 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import workhourscontrol.client.util.StringUtils;
+import workhourscontrol.util.StringUtils;
 
 /**
  * Exibe label com diferentes cores dependendo de dadas regras

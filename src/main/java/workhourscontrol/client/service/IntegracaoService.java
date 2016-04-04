@@ -114,7 +114,7 @@ public class IntegracaoService {
 		final String className = configuracaoAplicacao.getControleHorasClass();
 		try {
 			if (StringUtils.isBlank(className)) {
-				final String msg = "Propriedade controleHorasClass nï¿½o encontrada";
+				final String msg = "Propriedade controleHorasClass não encontrada";
 				logger.warn(msg);
 				throw new Exception(msg);
 			}
@@ -126,7 +126,7 @@ public class IntegracaoService {
 			throw new RuntimeException(e);
 
 		} catch (ClassNotFoundException e) {
-			logger.error("Classe " + className + " nï¿½o encontrada.", e);
+			logger.error("Classe " + className + " não encontrada.", e);
 			throw new RuntimeException(e);
 		}
 	}

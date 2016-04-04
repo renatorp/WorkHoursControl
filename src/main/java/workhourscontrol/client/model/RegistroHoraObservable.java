@@ -7,8 +7,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
+import workhourscontrol.util.DateUtils;
 
 public class RegistroHoraObservable extends RegistroHora{
 

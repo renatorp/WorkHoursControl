@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import workhourscontrol.client.model.RegistroHoraObservable;
-import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.SaldoHorasHolder;
 import workhourscontrol.entity.RegistroHora;
+import workhourscontrol.util.DateUtils;
 
 public class ControleHorasService {
 
@@ -28,7 +28,7 @@ public class ControleHorasService {
 
 	public String calcularDuracaoTrabalhoFormatado(List<RegistroHoraObservable> listaRegistroHoras) {
 		double numRegPorData = calcularDuracaoTrabalho(listaRegistroHoras);
-		return workhourscontrol.client.util.StringUtils.formatarRetornoDuracao(numRegPorData);
+		return workhourscontrol.util.StringUtils.formatarRetornoDuracao(numRegPorData);
 	}
 
 	public double calcularDuracaoTrabalho(List<RegistroHoraObservable> listaRegistroHoras) {

@@ -7,6 +7,8 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
+import workhourscontrol.util.DateUtils;
+
 public class SaldoHorasHolder {
 
 	private static final String CHAVE_SALDO_HORAS = "saldoHoras";
@@ -17,7 +19,6 @@ public class SaldoHorasHolder {
 
 	// Retorna apenas uma vez
 	public static Double getSaldoHoras(Supplier<Double> action) {
-
 
 		// Verifica primeiramente na aplicação já aberta
 		if (Objects.isNull(saldoHoras)) {

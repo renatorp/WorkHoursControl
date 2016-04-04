@@ -104,7 +104,7 @@ public class WorkHoursManagerController {
 			final Double totalSelecionado = tabelaRegistroHora.getTotalSelecionado(r -> {
 				return controleHorasService.calcularDuracaoTrabalho(r);
 			});
-			labelTotal.setText(workhourscontrol.client.util.StringUtils.formatarRetornoDuracao(totalSelecionado));
+			labelTotal.setText(workhourscontrol.util.StringUtils.formatarRetornoDuracao(totalSelecionado));
 		});
 
 		saldoHorasLabel.setTesteDanger(valor -> valor < 0);
@@ -121,7 +121,7 @@ public class WorkHoursManagerController {
 						return true;
 					}
 
-					if (workhourscontrol.client.util.StringUtils.containsNice(registro.getObservacao(), newValue)) {
+					if (workhourscontrol.util.StringUtils.containsNice(registro.getObservacao(), newValue)) {
 						return true;
 					}
 
@@ -348,7 +348,7 @@ public class WorkHoursManagerController {
 		});
 
 		double horaRestante = controleHorasService.calcularHorasTrabalhoRestantes(registrosHoje);
-		horasRestantesLabel.setText(workhourscontrol.client.util.StringUtils.formatarRetornoDuracaoComoHoras(horaRestante));
+		horasRestantesLabel.setText(workhourscontrol.util.StringUtils.formatarRetornoDuracaoComoHoras(horaRestante));
 
 	}
 
