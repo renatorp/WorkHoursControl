@@ -63,6 +63,10 @@ public class DateUtils {
 		return hora.format(DateTimeFormatter.ofPattern(formatoPadraoHora));
 	}
 
+	public static String formatarHora(LocalTime hora) {
+		return hora.format(DateTimeFormatter.ofPattern(formatoPadraoHora));
+	}
+	
 	public static String formatarHoraAgora() {
 		return formatarHora(LocalDateTime.now());
 	}
@@ -94,8 +98,15 @@ public class DateUtils {
 		return (double)LocalTime.from(from).until(to, java.time.temporal.ChronoUnit.MINUTES) / 60;
 	}
 
+	public static long getDuracaoEmMinutos2(LocalTime from, LocalTime to) {
+		if (Objects.isNull(from) || Objects.isNull(to)) {
+			return 0l;
+		}
+		return LocalTime.from(from).until(to, java.time.temporal.ChronoUnit.MINUTES);
+	}
+	
 	/**
-	 * Obtém identificador da semana a partir de data
+	 * Obtï¿½m identificador da semana a partir de data
 	 * @param parseData
 	 * @return
 	 */

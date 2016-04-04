@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -38,6 +39,7 @@ import org.apache.log4j.Logger;
 import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.entity.RegistroHora;
 import workhourscontrol.exception.ControleHorasException;
+import workhourscontrol.strategy.AjusteHorasStrategy;
 
 public abstract class ControleHorasHttp implements ControleHoras {
 
@@ -89,7 +91,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 			HttpClientContext localContext = createLocalContext();
 
-			HttpResponse r = httpClient.execute(post, localContext);
+			httpClient.execute(post, localContext);
 
 			if (Objects.isNull(getCookieHeader(cookieStore))) {
 				throw new ControleHorasException("Não houve sucesso na autenticação");
@@ -188,8 +190,28 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 	@Override
 	public void registrarHoras(List<RegistroHora> registros) throws ControleHorasException {
+		registros = antesDeRegistrar(registros);
 		logarUsuario();
 		registrarHorasIndividualmente(registros);
+	}
+
+	private List<RegistroHora> antesDeRegistrar(List<RegistroHora> registros) {
+		registros = prepararListaRegistros(registros);
+		registros = aplicarStrategies(registros);
+		return registros;
+	}
+
+	private List<RegistroHora> aplicarStrategies(List<RegistroHora> registros) {
+		if (CollectionUtils.isNotEmpty(parametros.getAjusteHoratrategies())) {
+			for (AjusteHorasStrategy strategy : parametros.getAjusteHoratrategies()) {
+				registros = strategy.ajustarRegistros(registros);
+			}
+		}
+		return registros;
+	}
+
+	protected List<RegistroHora> prepararListaRegistros(List<RegistroHora> registros) {
+		return registros;
 	}
 
 	protected void registrarHorasIndividualmente(List<RegistroHora> registros) throws ControleHorasException {
@@ -263,6 +285,7 @@ public abstract class ControleHorasHttp implements ControleHoras {
 				httpClient.close();
 			}
 		} catch (IOException e) {
+			// FIXME: tratar melhor exceção
 			logger.error("Ocorreu ao fechar httpClient", e);
 			throw new RuntimeException(e);
 		}
@@ -321,4 +344,18 @@ public abstract class ControleHorasHttp implements ControleHoras {
 	public abstract String getUrlSaldoHoras();
 	public abstract List<NameValuePair> getParametrosSaldoHoras();
 
+
+	@SuppressWarnings("unused")
+	private void logResponse(HttpResponse response) throws IOException {
+		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+		//Extrai html do response
+		StringBuilder htmlResult = new StringBuilder();
+		String line = "";
+		while ((line = rd.readLine()) != null) {
+			htmlResult.append(line);
+		}
+
+		logger.info(htmlResult.toString());
+	}
 }
