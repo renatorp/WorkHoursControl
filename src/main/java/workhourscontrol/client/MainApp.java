@@ -3,8 +3,10 @@ package workhourscontrol.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Application;
 import javafx.beans.InvalidationListener;
@@ -269,5 +271,22 @@ public class MainApp extends Application{
 		} else {
 			salvarComo();
 		}
+	}
+
+	public void showAppVersion() {
+
+		try {
+			Properties prop = new Properties();
+			prop.load(getClass().getResourceAsStream("/application.properties"));
+
+			Dialogs.create()
+			.title("About")
+			.message("Versão: " + prop.getProperty("application.version"))
+			.showInformation();
+
+		} catch (IOException e) {
+			logger.error(e);
+		}
+
 	}
 }

@@ -18,6 +18,9 @@
                   <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Sair" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Ajuda">
+            	<MenuItem mnemonicParsing="false" onAction="#handleShowVersion" text="Versão" />
+            </Menu>
         </menus>
       </MenuBar>
    </top>

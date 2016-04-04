@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>WorkHoursControl</groupId>
 	<artifactId>WorkHoursControl</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 
 	<organization>
@@ -21,8 +21,17 @@
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>
+						**/*.properties
+					</include>
+				</includes>
 			</resource>
 		</resources>
+		<filters>
+			<filter>src/main/resources/application.properties</filter>
+		</filters>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +103,6 @@
 						</manifest>
 					</archive>
 					<finalName>WorkHoursControl</finalName>
-					<outputDirectory>C:\Users\brx0000540\Desktop\hacks</outputDirectory>
 					<appendAssemblyId>false</appendAssemblyId>
 					<resources>
 						<resource>
@@ -112,6 +120,7 @@
 				<configuration>
 					<mainClass>workhourscontrol.client.MainApp</mainClass>
 					<needShortcut>true</needShortcut>
+					<appName>WorkHoursControl-0.0.1-SNAPSHOT</appName>
 				</configuration>
 			</plugin>
 		</plugins>

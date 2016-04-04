@@ -64,4 +64,9 @@ public class RootLayoutController {
 		this.mainApp = mainApp;
 	}
 
+	@FXML
+	public void handleShowVersion() {
+		this.mainApp.showAppVersion();
+	}
+
 }
