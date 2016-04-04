@@ -239,10 +239,14 @@ public abstract class ControleHorasHttp implements ControleHoras {
 		loginParameters.add(new BasicNameValuePair(getNomeParametroIssue(), registroHora.getIssue()));
 		loginParameters.add(new BasicNameValuePair(getNomeParametroHoraInicio(), registroHora.getHoraInicio()));
 		loginParameters.add(new BasicNameValuePair(getNomeParametroHoraFim(), registroHora.getHoraFim()));
-		loginParameters.add(new BasicNameValuePair(getObservacoes(), registroHora.getObservacao()));
+		loginParameters.add(new BasicNameValuePair(getObservacoes(), formatarObservacaoParaRequisicao(registroHora)));
 		loginParameters.addAll(getParametrosAdicionaisRegistroHora());
 
         return loginParameters;
+	}
+
+	protected String formatarObservacaoParaRequisicao(RegistroHora registroHora) {
+		return registroHora.getObservacao();
 	}
 
 	protected List<NameValuePair> getParametrosAdicionaisLogin() {
