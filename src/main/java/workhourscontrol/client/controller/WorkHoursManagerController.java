@@ -243,6 +243,10 @@ public class WorkHoursManagerController {
 					mainApp.setNotSaved();
 				};
 
+				protected void failed() {
+					logger.error("Ocorreu um erro ao sincronizar registros de hora. ", getException());
+				};
+
     		};
 
     		btnSincronizar.disableProperty().bind(task.runningProperty());

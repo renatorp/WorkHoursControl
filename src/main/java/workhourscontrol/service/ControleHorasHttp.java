@@ -188,14 +188,8 @@ public abstract class ControleHorasHttp implements ControleHoras {
 
 	@Override
 	public void registrarHoras(List<RegistroHora> registros) throws ControleHorasException {
-		try {
-			logarUsuario();
-			registrarHorasIndividualmente(registros);
-		} catch (RuntimeException e) {
-			throw new ControleHorasException(e);
-		} catch (Error e) {
-			throw new ControleHorasException(e);
-		}
+		logarUsuario();
+		registrarHorasIndividualmente(registros);
 	}
 
 	protected void registrarHorasIndividualmente(List<RegistroHora> registros) throws ControleHorasException {

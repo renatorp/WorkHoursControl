@@ -1,7 +1,6 @@
 package workhourscontrol.client;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -137,7 +136,7 @@ public class MainApp extends Application{
             primaryStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -159,7 +158,7 @@ public class MainApp extends Application{
               carregarXmlPreferencias();
 
           } catch (IOException e) {
-              e.printStackTrace();
+        	  logger.error(e);
           }
 
     }
@@ -255,7 +254,6 @@ public class MainApp extends Application{
 			}
 		} catch (Exception e) {
 			logger.error("Ocorreu um erro ao carregar arquivo xml", e);
-			throw new RuntimeException(e);
 		}
 	}
 
