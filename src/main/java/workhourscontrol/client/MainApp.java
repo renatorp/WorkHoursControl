@@ -63,7 +63,7 @@ public class MainApp extends Application{
 
 	private void initStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Work Hours Control");
+        this.primaryStage.setTitle("Controle de Horas Trabalhadas");
 
         primaryStage.setOnCloseRequest(evt -> {
         	final boolean isSaved = saved.get();
