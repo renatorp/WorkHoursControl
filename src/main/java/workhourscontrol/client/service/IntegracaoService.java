@@ -76,7 +76,7 @@ public class IntegracaoService {
 
 	}
 
-	public double obterSaldoHoras() {
+	public Double obterSaldoHoras() {
 		try {
 			double result = controleHorasHttp.obterSaldoHoras();
 			return result;
@@ -85,7 +85,7 @@ public class IntegracaoService {
 		} finally {
 			controleHorasHttp.fecharConexao();
 		}
-		return 0;
+		return null;
 	}
 
 
