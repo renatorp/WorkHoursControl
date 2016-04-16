@@ -71,7 +71,11 @@ public class IntegracaoService {
 		} catch (ControleHorasException e) {
 			logger.error("Erro ao sincronizar registros.", e);
 		} finally {
-			controleHorasHttp.fecharConexao();
+			try {
+				controleHorasHttp.fecharConexao();
+			} catch (ControleHorasException e) {
+				logger.error("Erro ao sincronizar registros. Não foi possível fechar conexão", e);
+			}
 		}
 
 	}
@@ -83,7 +87,11 @@ public class IntegracaoService {
 		} catch (ControleHorasException e) {
 			logger.error("Erro ao obter saldo de horas.", e);
 		} finally {
-			controleHorasHttp.fecharConexao();
+			try {
+				controleHorasHttp.fecharConexao();
+			} catch (ControleHorasException e) {
+				logger.error("Erro ao sincronizar registros. Não foi possível fechar conexão", e);
+			}
 		}
 		return null;
 	}
@@ -93,14 +101,22 @@ public class IntegracaoService {
 	 * Aponta horas em planilha de acordo com implementa��o de ControleHoraPlanilha
 	 */
 	public void sincronizarRegistrosHoraComPlanilha(List<RegistroHora> registros, File arquivo) {
+		
+		ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
+
+		ControleHoras controleHorasPlanilha =  builder.setPlanilha(arquivo)
+				.addAjusteHorasStrategy(new MesclagemHorariosStrategy())
+				.build();
 		try {
-			ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
-			builder.setPlanilha(arquivo);
-			ControleHoras controleHorasPlanilha = builder.build();
 			controleHorasPlanilha.registrarHoras(registros);
-			controleHorasPlanilha.fecharConexao();
 		} catch (ControleHorasException e) {
 			logger.error("Erro ao sincronizar registros com planilha.", e);
+		} finally {
+			try {
+				controleHorasPlanilha.fecharConexao();
+			} catch (ControleHorasException e) {
+				logger.error("Erro ao sincronizar registros com planilha. Não foi possível fechar conexão", e);
+			}
 		}
 	}
 
@@ -114,7 +130,7 @@ public class IntegracaoService {
 		final String className = configuracaoAplicacao.getControleHorasClass();
 		try {
 			if (StringUtils.isBlank(className)) {
-				final String msg = "Propriedade controleHorasClass n�o encontrada";
+				final String msg = "Propriedade controleHorasClass n�o encontrada";
 				logger.warn(msg);
 				throw new Exception(msg);
 			}
@@ -126,7 +142,7 @@ public class IntegracaoService {
 			throw new RuntimeException(e);
 
 		} catch (ClassNotFoundException e) {
-			logger.error("Classe " + className + " n�o encontrada.", e);
+			logger.error("Classe " + className + " n�o encontrada.", e);
 			throw new RuntimeException(e);
 		}
 	}
