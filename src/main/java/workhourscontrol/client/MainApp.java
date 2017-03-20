@@ -279,6 +279,12 @@ public class MainApp extends Application{
 			Properties prop = new Properties();
 			prop.load(getClass().getResourceAsStream("/application.properties"));
 
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle("About");
+//			alert.setHeaderText("About");
+//			alert.setContentText("Versão: " + prop.getProperty("application.version"));
+//			alert.showAndWait();
+
 			Dialogs.create()
 			.title("About")
 			.message("Versão: " + prop.getProperty("application.version"))

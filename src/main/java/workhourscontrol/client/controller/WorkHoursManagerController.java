@@ -2,6 +2,7 @@ package workhourscontrol.client.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.dialog.Dialogs;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -69,6 +69,7 @@ public class WorkHoursManagerController {
 	@FXML private LabelAviso saldoHorasLabel;
 
 	@FXML private Button btnSalvarPlanilha;
+	@FXML private Button btnAbrirPlanilha;
 	@FXML private Button btnSincronizar;
 
 	@FXML private Label saldoHorasDescricaoLabel;
@@ -278,15 +279,21 @@ public class WorkHoursManagerController {
 					}
 
 					@Override
-					protected void done() {
-						Platform.runLater(() ->
-								Dialogs.create()
-								.title("Mensagem sucesso")
-								.masthead("Importado com sucesso...")
-								.message("Sincronização realizada com sucesso!!.")
-								.showInformation()
-						);
-						super.done();
+					protected void succeeded() {
+//						Alert alert = new Alert(AlertType.INFORMATION);
+//						alert.setTitle("Mensagem Sucessot");
+//						alert.setHeaderText("Importado com sucesso...");
+//						alert.setContentText("Sincronização realizada com sucesso!!");
+//
+//						alert.showAndWait();
+
+						Dialogs.create()
+						.title("Mensagem sucesso")
+						.masthead("Importado com sucesso...")
+						.message("Sincronização realizada com sucesso!!.")
+						.showInformation();
+
+						super.succeeded();
 					}
 				};
 
@@ -296,6 +303,11 @@ public class WorkHoursManagerController {
 
     		}
     	}
+	}
+
+	public void handleAbrirPlanilha() throws MalformedURLException {
+		File arquivo = obterArquivoPlanilha();
+		mainApp.getHostServices().showDocument(arquivo.toURI().toURL().toExternalForm().replace("%20", " "));
 	}
 
 	/**

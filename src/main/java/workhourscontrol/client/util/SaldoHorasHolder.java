@@ -28,13 +28,16 @@ public class SaldoHorasHolder {
 
 			// Caso não exista, verifica nas preferências do sistema
 
-			if (StringUtils.isBlank(saldoString)
+			if (StringUtils.isBlank(saldoString) || "null".equals(saldoString)
 					|| DateUtils.isNotHoje(LocalDate.parse(dataRegistro, DateTimeFormatter.ofPattern(FORMATO_DATA)))) {
 
 				// Se não encontrar, busca remotamente
 				saldoHoras = action.get();
-				PreferencesHelper.setPref(CHAVE_SALDO_HORAS, String.valueOf(saldoHoras));
-				PreferencesHelper.setPref(CHAVE_DATA_SALDO_HORAS, DateUtils.formatarData(LocalDate.now(), FORMATO_DATA));
+
+				if (Objects.nonNull(saldoString)) {
+					PreferencesHelper.setPref(CHAVE_SALDO_HORAS, String.valueOf(saldoHoras));
+					PreferencesHelper.setPref(CHAVE_DATA_SALDO_HORAS, DateUtils.formatarData(LocalDate.now(), FORMATO_DATA));
+				}
 
 			} else {
 				saldoHoras = Double.valueOf(saldoString);
