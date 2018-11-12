@@ -15,6 +15,7 @@ public class ConfiguracoesAplicacao {
 	private String passwordAplicacao;
 	private String urlPlanilha;
 	private String controleHorasClass;
+	private Double saldoHorasMesAnterior;
 
 	@XmlElement(name = "issueDefault")
 	public String getIssueDefault() {
@@ -88,6 +89,13 @@ public class ConfiguracoesAplicacao {
 		this.controleHorasClass = controleHorasClass;
 	}
 
+	@XmlElement(name = "saldoHorasMesAnterior")
+	public Double getSaldoHorasMesAnterior() {
+		return saldoHorasMesAnterior;
+	}
+	public void setSaldoHorasMesAnterior(Double saldoHorasMesAnterior) {
+		this.saldoHorasMesAnterior = saldoHorasMesAnterior;
+	}
 
 
 }

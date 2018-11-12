@@ -367,7 +367,8 @@ public class WorkHoursManagerController {
 	private void atualizarLabelSaldoHoras() {
 		final List<Double> listaTotais = tabelaTotalizador.getTotaisMenosHoje();
 		double saldoHorasMesAtual = controleHorasService.calcularSaldoHoras(listaTotais);
-		Double saldoHorasAnterior = controleHorasService.obterSaldoHorasMesAnterior();
+
+		Double saldoHorasAnterior = getSaldoHorasMesAnterior();
 
 		// Exibe "*" quando não for possível obter o saldo de horas do servidor
 		if (Objects.isNull(saldoHorasAnterior)) {
@@ -378,6 +379,14 @@ public class WorkHoursManagerController {
 		}
 
 		saldoHorasLabel.setValor(saldoHorasMesAtual);
+	}
+
+	private Double getSaldoHorasMesAnterior() {
+		Double saldoHorasMesAnteriorFromFile = MainApp.configuracoesAplicacao.getSaldoHorasMesAnterior();
+		if (saldoHorasMesAnteriorFromFile != null) {
+			return saldoHorasMesAnteriorFromFile;
+		}
+		return controleHorasService.obterSaldoHorasMesAnterior();
 	}
 
 

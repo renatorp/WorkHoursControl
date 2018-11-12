@@ -49,9 +49,12 @@ public class IntegracaoService {
 
 				ControleHorasHttpBuilder builder = new ControleHorasHttpBuilder(getControleHorasImpl());
 
-				controleHorasHttp = builder.setProxy(configuracaoAplicacao.getProxyHost(),Integer.parseInt(configuracaoAplicacao.getProxyPort()))
-						.setCredenciaisProxy(configuracaoAplicacao.getProxyUser(),configuracaoAplicacao.getProxyPassword())
-						.setCredenciaisAcessoRemoto(configuracaoAplicacao.getLoginAplicacao(), configuracaoAplicacao.getPasswordAplicacao())
+				if (StringUtils.isNotBlank(configuracaoAplicacao.getProxyHost())) {
+					builder.setProxy(configuracaoAplicacao.getProxyHost(),Integer.parseInt(configuracaoAplicacao.getProxyPort()))
+					.setCredenciaisProxy(configuracaoAplicacao.getProxyUser(),configuracaoAplicacao.getProxyPassword());
+				}
+
+				controleHorasHttp = builder.setCredenciaisAcessoRemoto(configuracaoAplicacao.getLoginAplicacao(), configuracaoAplicacao.getPasswordAplicacao())
 						.addAjusteHorasStrategy(new MesclagemHorariosStrategy())
 						.build();
 			}
@@ -72,7 +75,9 @@ public class IntegracaoService {
 			logger.error("Erro ao sincronizar registros.", e);
 		} finally {
 			try {
-				controleHorasHttp.fecharConexao();
+				if (controleHorasHttp != null) {
+					controleHorasHttp.fecharConexao();
+				}
 			} catch (ControleHorasException e) {
 				logger.error("Erro ao sincronizar registros. Não foi possível fechar conexão", e);
 			}
@@ -101,7 +106,7 @@ public class IntegracaoService {
 	 * Aponta horas em planilha de acordo com implementa��o de ControleHoraPlanilha
 	 */
 	public void sincronizarRegistrosHoraComPlanilha(List<RegistroHora> registros, File arquivo) {
-		
+
 		ControleHorasPlanilhaBuilder builder = new ControleHorasPlanilhaBuilder(new ControleHorasPlanilha());
 
 		ControleHoras controleHorasPlanilha =  builder.setPlanilha(arquivo)
