@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import workhourscontrol.client.MainApp;
 import workhourscontrol.client.component.HourMaskedTextField;
 import workhourscontrol.client.model.RegistroHoraObservable;
-import workhourscontrol.client.util.DateUtils;
+import workhourscontrol.util.DateUtils;
 
 public class EditHourController {
 

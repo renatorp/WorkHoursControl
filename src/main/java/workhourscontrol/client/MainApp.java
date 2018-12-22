@@ -63,7 +63,7 @@ public class MainApp extends Application{
 
 	private void initStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Work Hours Control");
+        this.primaryStage.setTitle("Controle de Horas Trabalhadas");
 
         primaryStage.setOnCloseRequest(evt -> {
         	final boolean isSaved = saved.get();
@@ -278,6 +278,12 @@ public class MainApp extends Application{
 		try {
 			Properties prop = new Properties();
 			prop.load(getClass().getResourceAsStream("/application.properties"));
+
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle("About");
+//			alert.setHeaderText("About");
+//			alert.setContentText("Versão: " + prop.getProperty("application.version"));
+//			alert.showAndWait();
 
 			Dialogs.create()
 			.title("About")

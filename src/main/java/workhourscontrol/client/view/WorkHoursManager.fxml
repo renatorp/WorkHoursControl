@@ -14,7 +14,7 @@
 
 <AnchorPane fx:id="workHoursManagerLayout" prefHeight="585.0" prefWidth="696.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="workhourscontrol.client.controller.WorkHoursManagerController">
    <children>
-      <HBox layoutX="284.0" layoutY="284.0" prefHeight="25.0" prefWidth="407.0" AnchorPane.rightAnchor="5.0">
+      <HBox layoutX="284.0" layoutY="284.0" prefHeight="25.0" prefWidth="507.0" AnchorPane.rightAnchor="5.0">
          <children>
             <Button mnemonicParsing="false" onAction="#handleNovoRegistro" prefHeight="25.0" prefWidth="71.0" text="Novo">
                <HBox.margin>
@@ -32,6 +32,11 @@
                </HBox.margin>
             </Button>
             <Button fx:id="btnSalvarPlanilha" mnemonicParsing="false" onAction="#handleSincronizarPlanilha" prefHeight="25.0" prefWidth="109.0" text="Salvar Planilha">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btnAbrirPlanilha" mnemonicParsing="false" onAction="#handleAbrirPlanilha" prefHeight="25.0" prefWidth="109.0" text="Abrir Planilha">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

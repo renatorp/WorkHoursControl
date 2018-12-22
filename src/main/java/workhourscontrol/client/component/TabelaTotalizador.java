@@ -34,8 +34,8 @@ import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.properties.PropertyAdapter;
 import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.util.ClipboardUtils;
-import workhourscontrol.client.util.DateUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
+import workhourscontrol.util.DateUtils;
 
 public class TabelaTotalizador extends HBox{
 

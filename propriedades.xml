@@ -7,6 +7,6 @@
     <proxyPassword>12345</proxyPassword>
     <proxyPort>80</proxyPort>
     <proxyUser>fulanoc</proxyUser>
-    <urlPlanilha>C:\Users\fulano\Documents\abc.xlsx</urlPlanilha>
+    <urlPlanilha>\\CORPS031\desenvolvimento\PlanilhasHora\Fábrica\Renato Ribeiro de Paula\RENATO PAULA - PLANILHA DE PONTO-2017-03.xlsx</urlPlanilha>
     <controleHorasClass>workhourscontrol.service.impl.ControleHorasHttpImpl</controleHorasClass>
 </configuracao>

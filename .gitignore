@@ -28,4 +28,4 @@ build/
 
 
 # não incluir implementações
-src/main/java/workhourscontrol/service/impl/*
+src/main/java/workhourscontrol/client/service/impl/*
