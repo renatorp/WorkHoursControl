@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.controlsfx.dialog.Dialogs;
 
 import javafx.application.Application;
 import javafx.beans.InvalidationListener;
@@ -16,6 +15,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -41,7 +42,7 @@ public class MainApp extends Application{
 	private ObservableList<RegistroHoraObservable> registrosHora;
 	private File arquivoAberto;
 
-	// Atributos para verificas se registros já foram salvos
+	// Atributos para verificas se registros jï¿½ foram salvos
 	private BooleanProperty saved = new SimpleBooleanProperty();
 	private InvalidationListener savedListener;
 
@@ -75,7 +76,7 @@ public class MainApp extends Application{
 	}
 
 	/**
-	 * Usuário confirma se deve salvar o estado da aplicação no arquivo.
+	 * Usuï¿½rio confirma se deve salvar o estado da aplicaï¿½ï¿½o no arquivo.
 	 */
 	private boolean confirmarFechamentoAplicacao() {
 		return DialogoHelper.confirmarFechamentoAplicacao(() -> salvar());
@@ -95,16 +96,16 @@ public class MainApp extends Application{
 				logger.info("Utilizando arquivo " + arquivoPropriedades.getAbsolutePath());
 				configuracoesAplicacao = xmlService.carregarXml(arquivoPropriedades, ConfiguracoesAplicacao.class);
 			} else {
-				logger.warn("O arquivo de configurações '" + getPropertyFileName() + "' não foi encontrado ");
+				logger.warn("O arquivo de configuraï¿½ï¿½es '" + getPropertyFileName() + "' nï¿½o foi encontrado ");
 			}
 		} catch(Exception e) {
-			logger.error("Ocorreu um erro ao carregar arquivo xml de configurações", e);
+			logger.error("Ocorreu um erro ao carregar arquivo xml de configuraï¿½ï¿½es", e);
 			throw new RuntimeException(e);
 		}
 	}
 
 	/**
-	 * Primeiro verifica se o nome do arquivo de propriedades foi passado como parâmetro para a vm
+	 * Primeiro verifica se o nome do arquivo de propriedades foi passado como parï¿½metro para a vm
 	 */
 	private String getPropertyFileName() {
 		final String propertyParameter = System.getProperty("arquivoPropriedades");
@@ -158,14 +159,14 @@ public class MainApp extends Application{
 
               // Se algum arquivo foi aberto recentemente, carrega o mesmo
               carregarXmlPreferencias();
-
+              
           } catch (IOException e) {
         	  logger.error(e);
           }
 
     }
 
-    /**
+	/**
      * Carrega ultimo xml aberto, se houver
      */
 	private void carregarXmlPreferencias() {
@@ -175,7 +176,7 @@ public class MainApp extends Application{
 				carregarRegistrosDoArquivo(arquivoAberto);
 			}
 		} catch (Exception e) {
-			logger.warn("Não foi possível carregar último arquivo xml aberto.", e);
+			logger.warn("Nï¿½o foi possï¿½vel carregar ï¿½ltimo arquivo xml aberto.", e);
 		}
 	}
 
@@ -279,16 +280,11 @@ public class MainApp extends Application{
 			Properties prop = new Properties();
 			prop.load(getClass().getResourceAsStream("/application.properties"));
 
-//			Alert alert = new Alert(AlertType.INFORMATION);
-//			alert.setTitle("About");
-//			alert.setHeaderText("About");
-//			alert.setContentText("Versão: " + prop.getProperty("application.version"));
-//			alert.showAndWait();
-
-			Dialogs.create()
-			.title("About")
-			.message("Versão: " + prop.getProperty("application.version"))
-			.showInformation();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("About");
+			alert.setHeaderText("About");
+			alert.setContentText("VersÃ£o: " + prop.getProperty("application.version"));
+			alert.showAndWait();
 
 		} catch (IOException e) {
 			logger.error(e);

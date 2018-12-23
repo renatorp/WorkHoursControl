@@ -21,7 +21,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleDeletarRegistro" prefHeight="25.0" prefWidth="64.0" text="Deletar">
+            <Button mnemonicParsing="false" onAction="#handleDeletarRegistro" prefHeight="25.0" prefWidth="100.0" text="Deletar">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
@@ -49,17 +49,17 @@
 	      	<TabelaTotalizador fx:id="tabelaTotalizador" layoutX="14.0" layoutY="316.0" prefHeight="200.0" prefWidth="200.0" />
       	</children>
       </HBox>
-      <Label fx:id="labelTotal" layoutX="113.0" layoutY="563.0" prefHeight="17.0" prefWidth="51.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="113.0" />
+      <Label fx:id="labelTotal" layoutX="113.0" layoutY="563.0" prefHeight="17.0" prefWidth="51.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="140.0" />
       <HBox layoutX="261.0" layoutY="322.0" prefHeight="97.0" prefWidth="214.0" AnchorPane.leftAnchor="261.0">
       	<children>
       		<TabelaTotalizadorSemanal fx:id="tabelaTotalizadorSemanal" />
       	</children>
       </HBox>
       <Label layoutX="14.0" layoutY="563.0" text="Total selecionado: " AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="14.0" />
-      <Label layoutX="196.0" layoutY="563.0" prefHeight="17.0" prefWidth="91.0" text="Horas restantes:" AnchorPane.bottomAnchor="5.0" />
-      <Label fx:id="horasRestantesLabel" layoutX="287.0" layoutY="563.0" AnchorPane.bottomAnchor="5.0" />
-      <Label fx:id="saldoHorasDescricaoLabel" layoutX="368.0" layoutY="563.0" prefHeight="17.0" prefWidth="91.0" text="Saldo de horas:" AnchorPane.bottomAnchor="5.0" />
-      <LabelAviso fx:id="saldoHorasLabel" layoutX="459.0" layoutY="563.0" prefHeight="17.0" prefWidth="40.0" AnchorPane.bottomAnchor="5.0" />
+      <Label layoutX="196.0" layoutY="563.0" prefHeight="17.0" prefWidth="120.0" text="Horas restantes:" AnchorPane.bottomAnchor="5.0" />
+      <Label fx:id="horasRestantesLabel" layoutX="287.0" layoutY="563.0" AnchorPane.leftAnchor="310.0" AnchorPane.bottomAnchor="5.0" />
+      <Label fx:id="saldoHorasDescricaoLabel" layoutX="368.0" layoutY="563.0" prefHeight="17.0" prefWidth="120.0" text="Saldo de horas:" AnchorPane.bottomAnchor="5.0" />
+      <LabelAviso fx:id="saldoHorasLabel" layoutX="489.0" layoutY="563.0" prefHeight="17.0" prefWidth="40.0" AnchorPane.bottomAnchor="5.0" />
       <TextField fx:id="filtroObs" layoutX="8.0" layoutY="2.0" />
    </children>
 </AnchorPane>

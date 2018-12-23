@@ -24,6 +24,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -59,7 +61,7 @@ public class WorkHoursManagerController {
 
 	@FXML private AnchorPane workHoursManagerLayout;
 
-	/** Tabelas da aplicação */
+	/** Tabelas da aplicaÃ§Ã£oo */
 	@FXML private TabelaRegistroHora tabelaRegistroHora;
 	@FXML private TabelaTotalizador tabelaTotalizador;
 	@FXML private TabelaTotalizadorSemanal tabelaTotalizadorSemanal;
@@ -144,6 +146,19 @@ public class WorkHoursManagerController {
 			}
 		});
 
+		initializeButtons();
+		
+	}
+
+	private void initializeButtons() {
+		if (MainApp.configuracoesAplicacao.getUrlPlanilha() == null) {
+			btnAbrirPlanilha.setVisible(false);
+			btnSalvarPlanilha.setVisible(false);
+		}
+		if (MainApp.configuracoesAplicacao.getLoginAplicacao() == null) {
+			btnSincronizar.setVisible(false);
+		}
+		
 	}
 
 	private void initHoursEdit(RegistroHoraObservable itemSelecionado) {
@@ -173,13 +188,13 @@ public class WorkHoursManagerController {
             	this.mainApp.setNotSaved();
             });
 
-            // Mostra a janela e espera até o usuário fechar.
+            // Mostra a janela e espera atÃ© o usuï¿½rio fechar.
             mainApp.getPrimaryStage().hide();
             dialogStage.showAndWait();
             mainApp.getPrimaryStage().show();
 
 		} catch (IOException e) {
-			logger.error("Ocorreu um erro ao carregar tela de edição", e);
+			logger.error("Ocorreu um erro ao carregar tela de ediÃ§Ã£o", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -212,11 +227,11 @@ public class WorkHoursManagerController {
     		atualizarLabelSaldoHoras();
     	} else {
     		//Nada selecionado
-    		Dialogs.create()
-    			.title("Nenhuma seleção")
-    			.masthead("Nenhum registro selecionado")
-    			.message("Por favor, selecione um registro na tabela.")
-    			.showWarning();
+    		Alert alert = new Alert(AlertType.WARNING);
+    		alert.setTitle("Nenhuma seleÃ§Ã£o");
+    		alert.setHeaderText("Nenhum registro selecionado");
+    		alert.setContentText("Por favor, selecione um registro na tabela.");
+    		alert.showAndWait();
     	}
 	}
 
@@ -280,18 +295,12 @@ public class WorkHoursManagerController {
 
 					@Override
 					protected void succeeded() {
-//						Alert alert = new Alert(AlertType.INFORMATION);
-//						alert.setTitle("Mensagem Sucessot");
-//						alert.setHeaderText("Importado com sucesso...");
-//						alert.setContentText("Sincronização realizada com sucesso!!");
-//
-//						alert.showAndWait();
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Mensagem Sucessot");
+						alert.setHeaderText("Importado com sucesso...");
+						alert.setContentText("SincronizaÃ§Ã£o realizada com sucesso!!");
 
-						Dialogs.create()
-						.title("Mensagem sucesso")
-						.masthead("Importado com sucesso...")
-						.message("Sincronização realizada com sucesso!!.")
-						.showInformation();
+						alert.showAndWait();
 
 						super.succeeded();
 					}
@@ -311,7 +320,7 @@ public class WorkHoursManagerController {
 	}
 
 	/**
-	 * Caso haja uma planilha default, não abre janela para escolher
+	 * Caso haja uma planilha default, nï¿½o abre janela para escolher
 	 */
 	private File obterArquivoPlanilha() {
 		String urlDefaultPlanilha = MainApp.configuracoesAplicacao.getUrlPlanilha();
@@ -319,7 +328,7 @@ public class WorkHoursManagerController {
 			return new File(urlDefaultPlanilha);
 		}
 
-		return FileHelper.chooseFileForOpening(mainApp.getPrimaryStage(), "*.xlsx", "Planílhas de extensão .xlsx");
+		return FileHelper.chooseFileForOpening(mainApp.getPrimaryStage(), "*.xlsx", "Planilhas de extensÃ£o .xlsx");
 	}
 
 	public void setMainApp(MainApp mainApp) {
@@ -370,7 +379,7 @@ public class WorkHoursManagerController {
 
 		Double saldoHorasAnterior = getSaldoHorasMesAnterior();
 
-		// Exibe "*" quando não for possível obter o saldo de horas do servidor
+		// Exibe "*" quando nï¿½o for possï¿½vel obter o saldo de horas do servidor
 		if (Objects.isNull(saldoHorasAnterior)) {
 			saldoHorasDescricaoLabel.setText("*" + saldoHorasDescricaoLabel.getText());
 		} else {

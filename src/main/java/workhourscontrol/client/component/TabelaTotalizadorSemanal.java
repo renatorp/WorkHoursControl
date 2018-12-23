@@ -56,7 +56,7 @@ public class TabelaTotalizadorSemanal extends HBox {
 
 		mapTotais = FXCollections.observableHashMap();
 
-		// Permitindo selecionar múltiplas linhas
+		// Permitindo selecionar mÃºltiplas linhas
 		tabelaSemanas.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		controleHorasService = ControleHorasService.getInstance();
@@ -103,7 +103,7 @@ public class TabelaTotalizadorSemanal extends HBox {
 			mapTotais.put(semana, controleHorasService.calcularDuracaoTrabalhoFormatado(mapDatas.get(semana)));
 		}
 
-		// Adiciona datas à tabela
+		// Adiciona datas Ã  tabela
 		tabelaSemanas.getItems().addAll(mapDatas.keySet());
 	}
 

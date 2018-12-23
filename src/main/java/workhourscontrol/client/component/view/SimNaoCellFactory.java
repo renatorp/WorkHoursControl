@@ -5,7 +5,7 @@ import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
 /**
- * Cell Factory para exibir "Sim" ou "Não" em células com valor booleano
+ * Cell Factory para exibir "Sim" ou "NÃ£o" em cÃ©lulas com valor booleano
  */
 public class SimNaoCellFactory<E> implements Callback<TableColumn<E,Boolean>, TableCell<E,Boolean>> {
 
@@ -17,7 +17,7 @@ public class SimNaoCellFactory<E> implements Callback<TableColumn<E,Boolean>, Ta
 					if (item != null && item) {
 						this.setText("Sim");
 					} else {
-						this.setText("Não");
+						this.setText("NÃ£o");
 					}
 				} else {
 					this.setText("");

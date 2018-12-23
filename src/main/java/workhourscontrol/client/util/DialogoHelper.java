@@ -1,30 +1,43 @@
 package workhourscontrol.client.util;
 
+import java.util.Optional;
+
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+
 public class DialogoHelper {
 
 	/**
-	 * Exibe diálogo onde com opçoes Sim, Não e Cancelar para usuário confirmar se deseja fechar aplicação
-	 * Recebe como parâmetro a ação a ser realizada.
+	 * Exibe diï¿½logo onde com opï¿½oes Sim, Nï¿½o e Cancelar para usuï¿½rio confirmar se deseja fechar aplicaï¿½ï¿½o
+	 * Recebe como parï¿½metro a aï¿½ï¿½o a ser realizada.
 	 */
 	public static boolean confirmarFechamentoAplicacao(Runnable action) {
-		Action response = Dialogs.create()
-				.title("Atenção")
-				.masthead("Existem alterações não salvas.")
-				.message("Deseja salvar as alterações?")
-				.showConfirm();
-
-		if (response == Dialog.Actions.YES) {
+		Alert alert  = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("AtenÃ§Ã£o");
+		alert.setHeaderText("Existem alteraÃ§Ãµes nÃ£o salvas.");
+		alert.setContentText("Deseja salvar as alteraÃ§Ãµes");
+		
+		ButtonType buttonTypeYes = new ButtonType("Sim");
+		ButtonType buttonTypeNo = new ButtonType("NÃ£o");
+		ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+		
+		alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
+		
+		Optional<ButtonType> opt = alert.showAndWait();
+		
+		if (opt.get() == buttonTypeYes) {
 			action.run();
 			return true;
-		} else if (response == Dialog.Actions.NO) {
+		} else if (opt.get() == buttonTypeNo) {
 			return true;
-		} else {
-			return false;
 		}
 
+		return false;
 	}
 }

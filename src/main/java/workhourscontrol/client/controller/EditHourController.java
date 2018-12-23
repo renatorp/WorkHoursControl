@@ -65,10 +65,12 @@ public class EditHourController {
 
 		} else {
 
-			// Se houver uma issue default, j· a insere no campo
-			String issueDefault = MainApp.configuracoesAplicacao.getIssueDefault();
-			if (StringUtils.isNotBlank(issueDefault)) {
-				campoIssue.setText(issueDefault);
+			if (MainApp.configuracoesAplicacao != null) {
+				// Se houver uma issue default, j√° a insere no campo
+				String issueDefault = MainApp.configuracoesAplicacao.getIssueDefault();
+				if (StringUtils.isNotBlank(issueDefault)) {
+					campoIssue.setText(issueDefault);
+				}
 			}
 
 			// Inicializa data

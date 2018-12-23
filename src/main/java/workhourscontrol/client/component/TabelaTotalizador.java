@@ -63,7 +63,7 @@ public class TabelaTotalizador extends HBox{
 
 		mapTotais = FXCollections.observableHashMap();
 
-		// Permitindo selecionar múltiplas linhas
+		// Permitindo selecionar mÃºltiplas linhas
 		tabelaTotalizador.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		controleHorasService = ControleHorasService.getInstance();
@@ -148,7 +148,7 @@ public class TabelaTotalizador extends HBox{
 			mapTotais.put(data, controleHorasService.calcularDuracaoTrabalhoFormatado(mapDatas.get(data)));
 		}
 
-		// Adiciona datas à tabela
+		// Adiciona datas Ã  tabela
 		tabelaTotalizador.getItems().addAll(mapDatas.keySet());
 	}
 
