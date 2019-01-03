@@ -107,7 +107,8 @@ public class WorkHoursManagerController {
 			final Double totalSelecionado = tabelaRegistroHora.getTotalSelecionado(r -> {
 				return controleHorasService.calcularDuracaoTrabalho(r);
 			});
-			labelTotal.setText(workhourscontrol.util.StringUtils.formatarRetornoDuracao(totalSelecionado));
+			labelTotal.setText(getValorTotalFormatado(totalSelecionado));
+			
 		});
 
 		saldoHorasLabel.setTesteDanger(valor -> valor < 0);
@@ -148,6 +149,13 @@ public class WorkHoursManagerController {
 
 		initializeButtons();
 		
+	}
+
+	private String getValorTotalFormatado(final Double totalSelecionado) {
+		if (MainApp.configuracoesAplicacao.isContabilizarHorasFormatado()) {
+			return workhourscontrol.util.StringUtils.formatarRetornoDuracaoComoHoras(totalSelecionado);
+		} 
+		return workhourscontrol.util.StringUtils.formatarRetornoDuracao(totalSelecionado);
 	}
 
 	private void initializeButtons() {

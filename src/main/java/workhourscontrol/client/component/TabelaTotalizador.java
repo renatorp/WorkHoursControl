@@ -30,12 +30,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import workhourscontrol.client.MainApp;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.properties.PropertyAdapter;
 import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.util.ClipboardUtils;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 import workhourscontrol.util.DateUtils;
+import workhourscontrol.util.StringUtils;
 
 public class TabelaTotalizador extends HBox{
 
@@ -94,7 +96,11 @@ public class TabelaTotalizador extends HBox{
 		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<LocalDate,String>, ObservableValue<String>>() {
 			@Override
 			public ObservableValue<String> call(CellDataFeatures<LocalDate, String> param) {
-				return new SimpleStringProperty(mapTotais.get(param.getValue()));
+				String valor = mapTotais.get(param.getValue());
+				if (MainApp.configuracoesAplicacao.isContabilizarHorasFormatado()) {
+					valor = StringUtils.formatarRetornoDuracaoComoHoras(Double.parseDouble(valor.replaceAll(",", ".")));
+				}
+				return new SimpleStringProperty(valor);
 			}
 		});
 

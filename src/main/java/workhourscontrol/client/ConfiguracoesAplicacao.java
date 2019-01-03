@@ -16,6 +16,7 @@ public class ConfiguracoesAplicacao {
 	private String urlPlanilha;
 	private String controleHorasClass;
 	private Double saldoHorasMesAnterior;
+	private boolean contabilizarHorasFormatado = false;
 
 	@XmlElement(name = "issueDefault")
 	public String getIssueDefault() {
@@ -96,6 +97,13 @@ public class ConfiguracoesAplicacao {
 	public void setSaldoHorasMesAnterior(Double saldoHorasMesAnterior) {
 		this.saldoHorasMesAnterior = saldoHorasMesAnterior;
 	}
-
+	
+	@XmlElement(name = "contabilizarHorasFormatado")
+	public boolean isContabilizarHorasFormatado() {
+		return contabilizarHorasFormatado;
+	}
+	public void setContabilizarHorasFormatado(boolean contabilizarHorasFormatado) {
+		this.contabilizarHorasFormatado = contabilizarHorasFormatado;
+	}
 
 }

@@ -25,10 +25,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
+import workhourscontrol.client.MainApp;
 import workhourscontrol.client.model.RegistroHoraObservable;
 import workhourscontrol.client.service.ControleHorasService;
 import workhourscontrol.client.util.FXMLLoaderFactory;
 import workhourscontrol.util.DateUtils;
+import workhourscontrol.util.StringUtils;
 
 public class TabelaTotalizadorSemanal extends HBox {
 
@@ -66,7 +68,11 @@ public class TabelaTotalizadorSemanal extends HBox {
 		colunaTotal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Integer,String>, ObservableValue<String>>() {
 			@Override
 			public ObservableValue<String> call(CellDataFeatures<Integer, String> param) {
-				return new SimpleStringProperty(mapTotais.get(param.getValue()));
+				String valor = mapTotais.get(param.getValue());
+				if (MainApp.configuracoesAplicacao.isContabilizarHorasFormatado()) {
+					valor = StringUtils.formatarRetornoDuracaoComoHoras(Double.parseDouble(valor.replaceAll(",", ".")));
+				}
+				return new SimpleStringProperty(valor);
 			}
 		});
 

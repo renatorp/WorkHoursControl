@@ -9,4 +9,5 @@
     <proxyUser>fulanoc</proxyUser>
     <urlPlanilha>\\CORPS031\desenvolvimento\PlanilhasHora\Fábrica\Renato Ribeiro de Paula\RENATO PAULA - PLANILHA DE PONTO-2017-03.xlsx</urlPlanilha>
     <controleHorasClass>workhourscontrol.service.impl.ControleHorasHttpImpl</controleHorasClass>
+    <contabilizarHorasFormatado>false</contabilizarHorasFormatado>
 </configuracao>

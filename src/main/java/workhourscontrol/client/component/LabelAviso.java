@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import workhourscontrol.util.StringUtils;
 
@@ -21,19 +22,22 @@ public class LabelAviso extends HBox {
 	private Predicate<Double> testeDanger;
 	private Predicate<Double> testeWarning;
 	private Predicate<Double> testeInfo;
-
+	private Tooltip tooltip = new Tooltip();
+	
 	private ChangeListener<Number> changeListener = new ChangeListener<Number>() {
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 			label.setText(StringUtils.formatarRetornoDuracaoComoHoras(newValue.doubleValue()));
 			label.setStyle("-fx-text-fill: " + calcularCorLabel(newValue.doubleValue()) + " ;");
+			tooltip.setText(newValue.toString());
 		}
 	};
 
 	public LabelAviso() {
 		label = new Label();
 		getChildren().add(label);
-
+		label.setTooltip(tooltip);
+		
 		valor.addListener(changeListener);
 	}
 
